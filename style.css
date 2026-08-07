@@ -1,0 +1,988 @@
+/* ==========================================================================
+   PORTAL ÂM NHẠC TIỂU HỌC - STYLESHEET CHUẨN UI/UX
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+    --primary-blue: #1d4ed8;
+    --primary-dark-blue: #1e3a8a;
+    --accent-pink: #ec4899;
+    --accent-red: #e11d48;
+    --accent-yellow: #f59e0b;
+    --accent-green: #16a34a;
+    --accent-purple: #9333ea;
+    --accent-cyan: #0284c7;
+    
+    --bg-light: #f1f5f9;
+    --bg-white: #ffffff;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', 'Quicksand', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+/* ==========================================
+   1. TOP HEADER & MAIN NAVIGATION
+   ========================================== */
+.top-nav-bar {
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 10px 24px;
+}
+
+.nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo */
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, #ef4444, #f59e0b, #10b981, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+}
+
+.brand-text h1 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--primary-blue);
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+}
+
+.brand-text p {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    font-style: italic;
+}
+
+/* Main Nav Menu */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+}
+
+.nav-link i {
+    font-size: 0.95rem;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: #dbeafe;
+    color: var(--primary-dark-blue);
+}
+
+/* Login Button */
+.btn-login {
+    background-color: var(--primary-blue);
+    color: white;
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding: 8px 18px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
+}
+
+.btn-login:hover {
+    background-color: var(--primary-dark-blue);
+    transform: translateY(-1px);
+}
+
+/* ==========================================
+   2. MAIN CONTAINER & LAYOUT GRID
+   ========================================== */
+.main-wrapper {
+    max-width: 1280px;
+    margin: 20px auto;
+    padding: 0 16px;
+}
+
+.portal-grid {
+    display: grid;
+    grid-template-columns: 1fr 310px;
+    gap: 20px;
+}
+
+@media (max-width: 1024px) {
+    .portal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================
+   3. HERO BANNER / CAROUSEL (LEFT COLUMN)
+   ========================================== */
+.hero-carousel-container {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #dbeafe 100%);
+    border-radius: var(--radius-md);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    padding: 24px 36px;
+}
+
+.hero-content {
+    max-width: 55%;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.hero-checklist {
+    margin-bottom: 20px;
+}
+
+.hero-checklist li {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.hero-checklist li i {
+    color: #16a34a;
+    font-size: 1.1rem;
+}
+
+.btn-hero-cta {
+    background: linear-gradient(135deg, #ec4899, #e11d48);
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 800;
+    padding: 12px 26px;
+    border-radius: var(--radius-full);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 16px rgba(225, 29, 72, 0.4);
+    letter-spacing: 0.5px;
+}
+
+.btn-hero-cta:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.5);
+}
+
+.hero-image-banner {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    height: 95%;
+    max-width: 42%;
+    object-fit: contain;
+    z-index: 1;
+}
+
+/* Carousel Control Arrows */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    box-shadow: var(--shadow-sm);
+}
+
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+.carousel-btn:hover { background: white; }
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 3;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+
+.dot.active {
+    background: var(--primary-blue);
+    width: 24px;
+    border-radius: var(--radius-full);
+}
+
+/* ==========================================
+   4. SECTION HEADERS & CARDS
+   ========================================== */
+.section-block {
+    margin-bottom: 24px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.section-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+}
+
+.section-title i {
+    font-size: 1.2rem;
+    color: var(--primary-blue);
+}
+
+.btn-see-all {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    font-style: italic;
+}
+
+.btn-see-all:hover {
+    text-decoration: underline;
+}
+
+/* 4.1 BÀI HỌC THEO LỚP (5 GRADES ROW) */
+.grades-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .grades-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.grade-card {
+    background: white;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.grade-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.grade-header-banner {
+    padding: 12px 8px;
+    text-align: center;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    background-size: cover;
+    position: relative;
+}
+
+.grade-header-banner h3 {
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.grade-body {
+    padding: 12px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.grade-highlights {
+    margin-bottom: 12px;
+}
+
+.grade-highlights li {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.grade-highlights li::before {
+    content: "•";
+    font-weight: bold;
+    color: inherit;
+}
+
+.btn-grade-view {
+    width: 100%;
+    padding: 6px 0;
+    color: white;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.btn-grade-view:hover {
+    opacity: 0.9;
+}
+
+/* 4.2 TWO SUB-COLUMNS GRID (SONGS & VIDEOS, GAMES & NEWS) */
+.sub-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+    .sub-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* BÀI HẤT NỔI BẬT & VIDEO CARDS */
+.media-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.song-card, .video-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.song-card:hover, .video-card:hover {
+    transform: scale(1.03);
+}
+
+.media-thumb {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    overflow: hidden;
+    background: #cbd5e1;
+}
+
+.media-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.duration-tag {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.75);
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 4px;
+}
+
+.play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+
+.play-overlay:hover {
+    opacity: 1;
+}
+
+.media-info {
+    padding: 8px 6px;
+}
+
+.media-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+/* 4.3 TRÒ CHƠI ÂM NHẠC & TIN TỨC CARDS */
+.games-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.game-item-card {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 12px 6px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.game-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.game-title {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.news-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.news-card-item {
+    background: white;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.news-card-item:hover {
+    transform: translateY(-2px);
+}
+
+.news-thumb {
+    width: 100%;
+    height: 70px;
+    object-fit: cover;
+}
+
+.news-content {
+    padding: 6px;
+}
+
+.news-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-date {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ==========================================
+   5. RIGHT SIDEBAR WIDGETS
+   ========================================== */
+.sidebar-widget {
+    background: white;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+}
+
+.widget-header {
+    padding: 10px 14px;
+    color: white;
+    font-weight: 800;
+    font-size: 0.92rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.widget-header.blue { background-color: #2563eb; }
+.widget-header.dark-blue { background-color: #1e3a8a; }
+.widget-header.green { background-color: #16a34a; }
+.widget-header.orange { background-color: #ea580c; }
+.widget-header.purple { background-color: #7e22ce; }
+
+.widget-body {
+    padding: 12px 14px;
+}
+
+/* Widget: Thông báo */
+.announcement-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e2e8f0;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.announcement-list li:last-child {
+    border-bottom: none;
+}
+
+.anc-title {
+    font-weight: 600;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.anc-title i {
+    color: #2563eb;
+    font-size: 0.75rem;
+}
+
+.anc-date {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+/* Widget: Lịch học */
+.calendar-widget {
+    text-align: center;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.cal-day-header {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #475569;
+    padding: 4px 0;
+}
+
+.cal-day {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 0;
+    border-radius: 50%;
+    color: #334155;
+    cursor: pointer;
+}
+
+.cal-day:hover {
+    background-color: #e2e8f0;
+}
+
+.cal-day.highlight {
+    background-color: #ef4444;
+    color: white;
+    font-weight: 800;
+}
+
+/* Widget: Bài học mới */
+.new-lessons-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+.new-lessons-list li:last-child { border-bottom: none; }
+
+.lesson-title-text {
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lesson-title-text i {
+    color: #16a34a;
+}
+
+.grade-badge-sm {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+/* Widget: Liên kết nhanh */
+.quick-links-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.quick-link-btn {
+    background-color: #fff7ed;
+    border: 1px solid #ffedd5;
+    padding: 8px 6px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #c2410c;
+}
+
+.quick-link-btn i {
+    font-size: 1rem;
+}
+
+.quick-link-btn:hover {
+    background-color: #ffedd5;
+}
+
+/* Widget: Thống kê truy cập */
+.stats-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #e2e8f0;
+    font-size: 0.82rem;
+}
+
+.stats-list li:last-child { border-bottom: none; }
+
+.stat-label {
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-label i {
+    color: #7e22ce;
+}
+
+.stat-value {
+    font-weight: 800;
+    color: #1e293b;
+}
+
+/* ==========================================
+   6. FOOTER
+   ========================================== */
+.main-footer {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #1e3a8a 100%);
+    color: white;
+    padding: 24px 0 16px;
+    margin-top: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-brand .brand-text h2 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: white;
+}
+
+.footer-brand .brand-text p {
+    font-size: 0.75rem;
+    color: #bae6fd;
+    font-style: italic;
+}
+
+.footer-info p {
+    font-size: 0.82rem;
+    color: #f0f9ff;
+    margin-bottom: 4px;
+}
+
+.footer-social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.social-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+.social-icon:hover {
+    background: white;
+    color: var(--primary-blue);
+}
+
+.footer-copyright {
+    width: 100%;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    margin-top: 16px;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #e0f2fe;
+}
+
+/* ==========================================
+   7. MODALS & INTERACTIVE OVERLAYS
+   ========================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-card {
+    background: white;
+    border-radius: var(--radius-md);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: modalPop 0.3s ease;
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    padding: 14px 20px;
+    background: var(--primary-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.btn-close-modal {
+    background: none;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* Piano Keyboard Widget inside Games/Practice */
+.piano-keys-container {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 20px 0;
+}
+
+.piano-key {
+    width: 50px;
+    height: 140px;
+    background: white;
+    border: 2px solid #cbd5e1;
+    border-radius: 0 0 8px 8px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    font-weight: 800;
+    color: #334155;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+    user-select: none;
+}
+
+.piano-key:active, .piano-key.active {
+    background: #e0f2fe;
+    transform: translateY(2px);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Âm Nhạc Tiểu Học - Yêu âm nhạc - Khơi nguồn sáng tạo</title>
+    <meta name="description" content="Cổng thông tin và Nền tảng học tập Âm nhạc Tiểu học tương tác dành cho học sinh Khối 1 - 5.">
+    
+    <!-- CSS Stylesheet & FontAwesome Icons -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- 1. TOP HEADER & NAVIGATION BAR -->
+    <header class="top-nav-bar">
+        <div class="nav-container">
+            <!-- Brand Logo -->
+            <a href="#" class="brand-logo">
+                <div class="brand-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>ÂM NHẠC TIỂU HỌC</h1>
+                    <p>Yêu âm nhạc - Khơi nguồn sáng tạo</p>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#" class="nav-link active" data-nav="home"><i class="fas fa-home"></i> TRANG CHỦ</a></li>
+                    <li><a href="#" class="nav-link" data-nav="lessons"><i class="fas fa-book-open"></i> BÀI HỌC</a></li>
+                    <li><a href="#" class="nav-link" data-nav="singing"><i class="fas fa-microphone-alt"></i> HỌC HÁT</a></li>
+                    <li><a href="#" class="nav-link" data-nav="notes"><i class="fas fa-file-audio"></i> ĐỌC NHẠC</a></li>
+                    <li><a href="#" class="nav-link" data-nav="video"><i class="fas fa-video"></i> VIDEO</a></li>
+                    <li><a href="#" class="nav-link" data-nav="karaoke"><i class="fas fa-compact-disc"></i> KARAOKE</a></li>
+                    <li><a href="#" class="nav-link" data-nav="games"><i class="fas fa-gamepad"></i> TRÒ CHƠI</a></li>
+                    <li><a href="#" class="nav-link" data-nav="docs"><i class="fas fa-folder-open"></i> TÀI LIỆU</a></li>
+                    <li><a href="#" class="nav-link" data-nav="news"><i class="fas fa-newspaper"></i> TIN TỨC</a></li>
+                    <li><a href="#" class="nav-link" data-nav="contact"><i class="fas fa-envelope"></i> LIÊN HỆ</a></li>
+                </ul>
+            </nav>
+
+            <!-- Login Button -->
+            <button class="btn-login" id="btnLogin">
+                <i class="fas fa-user-circle"></i> Đăng nhập
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. MAIN CONTENT WRAPPER -->
+    <main class="main-wrapper">
+        <div class="portal-grid">
+
+            <!-- LEFT MAIN COLUMN (75%) -->
+            <div class="main-column">
+
+                <!-- 2.1 HERO BANNER CAROUSEL -->
+                <section class="hero-carousel-container">
+                    <button class="carousel-btn prev" id="btnPrevHero" aria-label="Slide trước"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn next" id="btnNextHero" aria-label="Slide sau"><i class="fas fa-chevron-right"></i></button>
+
+                    <div class="hero-content">
+                        <h2 class="hero-title">Học Âm nhạc vui vẻ mỗi ngày</h2>
+                        <ul class="hero-checklist">
+                            <li><i class="fas fa-check-circle"></i> Học hát</li>
+                            <li><i class="fas fa-check-circle"></i> Đọc nhạc</li>
+                            <li><i class="fas fa-check-circle"></i> Cảm thụ âm nhạc</li>
+                            <li><i class="fas fa-check-circle"></i> Trò chơi âm nhạc</li>
+                        </ul>
+                        <button class="btn-hero-cta" id="btnStartLearning">
+                            BẮT ĐẦU HỌC NGAY <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" alt="Bé học âm nhạc" class="hero-image-banner" id="heroImg">
+
+                    <div class="carousel-indicators">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </section>
+
+                <!-- 2.2 BÀI HỌC THEO LỚP -->
+                <section class="section-block">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-user-graduate"></i> BÀI HỌC THEO LỚP</h2>
+                        <a href="#" class="btn-see-all" onclick="app.showAllGradeLessons(); return false;">Xem tất cả</a>
+                    </div>
+
+                    <div class="grades-grid" id="gradesContainer">
+                        <!-- Dynamically Rendered 5 Grade Cards via app.js -->
+                    </div>
+                </section>
+
+                <!-- 2.3 BÀI HẤT NỔI BẬT & VIDEO BÀI GIẢNG GRID -->
+                <div class="sub-grid-2">
+                    <!-- Left: Bài hát nổi bật -->
+                    <section class="section-block">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-music"></i> BÀI HẤT NỔI BẬT</h2>
+                            <a href="#" class="btn-see-all" onclick="app.showAllSongs(); return false;">Xem tất cả</a>
+                        </div>
+                        <div class="media-cards-grid" id="songsContainer">
+                            <!-- Rendered 4 Song Cards -->
+                        </div>
+                    </section>
+
+                    <!-- Right: Video bài giảng -->
+                    <section class="section-block">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-video"></i> VIDEO BÀI GIẢNG</h2>
+                            <a href="#" class="btn-see-all" onclick="app.showAllVideos(); return false;">Xem tất cả</a>
+                        </div>
+                        <div class="media-cards-grid" id="videosContainer">
+                            <!-- Rendered 4 Video Cards -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- 2.4 TRÒ CHƠI ÂM NHẠC & TIN TỨC - HOẠT ĐỘNG GRID -->
+                <div class="sub-grid-2">
+                    <!-- Left: Trò chơi âm nhạc -->
+                    <section class="section-block">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-gamepad"></i> TRÒ CHƠI ÂM NHẠC</h2>
+                            <a href="#" class="btn-see-all" onclick="app.showAllGames(); return false;">Xem tất cả</a>
+                        </div>
+                        <div class="games-cards-grid" id="gamesContainer">
+                            <!-- Rendered 4 Game Cards -->
+                        </div>
+                    </section>
+
+                    <!-- Right: Tin tức - Hoạt động -->
+                    <section class="section-block">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-th-list"></i> TIN TỨC - HOẠT ĐỘNG</h2>
+                            <a href="#" class="btn-see-all" onclick="app.showAllNews(); return false;">Xem tất cả</a>
+                        </div>
+                        <div class="news-cards-grid" id="newsContainer">
+                            <!-- Rendered 4 News Cards -->
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDEBAR COLUMN (25%) -->
+            <aside class="sidebar-column">
+
+                <!-- WIDGET 1: THÔNG BÁO -->
+                <div class="sidebar-widget">
+                    <div class="widget-header blue">
+                        <i class="fas fa-bullhorn"></i> THÔNG BÁO
+                    </div>
+                    <div class="widget-body">
+                        <ul class="announcement-list" id="announcementsContainer">
+                            <!-- Rendered 5 Announcements -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- WIDGET 2: LỊCH HỌC -->
+                <div class="sidebar-widget">
+                    <div class="widget-header dark-blue">
+                        <i class="fas fa-calendar-alt"></i> LỊCH HỌC <span style="font-size:0.75rem; margin-left:auto;" id="calendarMonthTitle">Tháng 5 / 2024</span>
+                    </div>
+                    <div class="widget-body calendar-widget">
+                        <div class="calendar-grid" id="calendarDaysGrid">
+                            <!-- Days T2 - CN & Days numbers 1-31 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET 3: BÀI HỌC MỚI -->
+                <div class="sidebar-widget">
+                    <div class="widget-header green">
+                        <i class="fas fa-bookmark"></i> BÀI HỌC MỚI
+                    </div>
+                    <div class="widget-body">
+                        <ul class="new-lessons-list" id="newLessonsContainer">
+                            <!-- Rendered New Lessons -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- WIDGET 4: LIÊN KẾT NHANH -->
+                <div class="sidebar-widget">
+                    <div class="widget-header orange">
+                        <i class="fas fa-bolt"></i> LIÊN KẾT NHANH
+                    </div>
+                    <div class="widget-body">
+                        <div class="quick-links-grid">
+                            <button class="quick-link-btn" onclick="app.openQuickLink('sgk')"><i class="fas fa-book" style="color:#ef4444;"></i> Sách giáo khoa</button>
+                            <button class="quick-link-btn" onclick="app.openQuickLink('youtube')"><i class="fab fa-youtube" style="color:#ef4444;"></i> Kênh Âm nhạc</button>
+                            <button class="quick-link-btn" onclick="app.openQuickLink('instruments')"><i class="fas fa-guitar" style="color:#f59e0b;"></i> Nhạc cụ</button>
+                            <button class="quick-link-btn" onclick="app.openQuickLink('software')"><i class="fas fa-laptop-code" style="color:#3b82f6;"></i> Phần mềm</button>
+                            <button class="quick-link-btn" onclick="app.openQuickLink('photos')"><i class="fas fa-images" style="color:#ec4899;"></i> Thư viện ảnh</button>
+                            <button class="quick-link-btn" onclick="app.openQuickLink('faq')"><i class="fas fa-question-circle" style="color:#0284c7;"></i> Hỏi đáp</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WIDGET 5: THỐNG KÊ TRUY CẬP -->
+                <div class="sidebar-widget">
+                    <div class="widget-header purple">
+                        <i class="fas fa-chart-line"></i> THỐNG KÊ TRUY CẬP
+                    </div>
+                    <div class="widget-body">
+                        <ul class="stats-list">
+                            <li>
+                                <span class="stat-label"><i class="far fa-clock"></i> Lượt truy cập hôm nay</span>
+                                <span class="stat-value" id="statToday">1,245</span>
+                            </li>
+                            <li>
+                                <span class="stat-label"><i class="fas fa-chart-bar"></i> Lượt truy cập tuần này</span>
+                                <span class="stat-value" id="statThisWeek">12,458</span>
+                            </li>
+                            <li>
+                                <span class="stat-label"><i class="fas fa-globe"></i> Tổng lượt truy cập</span>
+                                <span class="stat-value" id="statTotal">256,789</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- 3. FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <!-- Footer Brand -->
+            <div class="footer-brand">
+                <i class="fas fa-music" style="font-size: 2.2rem; color:#bae6fd;"></i>
+                <div class="brand-text">
+                    <h2>ÂM NHẠC TIỂU HỌC</h2>
+                    <p>Yêu âm nhạc - Khơi nguồn sáng tạo</p>
+                </div>
+            </div>
+
+            <!-- Footer Teacher Info -->
+            <div class="footer-info">
+                <p><strong>Giáo viên phụ trách:</strong> Trần Thị Thu Nga</p>
+                <p><strong>Email:</strong> amnhactieuhoc@gmail.com</p>
+                <p><strong>Điện thoại:</strong> 0901 234 567</p>
+            </div>
+
+            <!-- Footer Social Connect -->
+            <div class="footer-social">
+                <span style="font-size: 0.82rem; font-weight:700;">Kết nối với chúng tôi:</span>
+                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon" aria-label="Zalo"><i class="fas fa-comment-dots"></i></a>
+                <a href="#" class="social-icon" aria-label="Website"><i class="fas fa-globe"></i></a>
+            </div>
+
+            <!-- Footer Copyright -->
+            <div class="footer-copyright">
+                <span>© 2024 Âm nhạc Tiểu học. All rights reserved.</span>
+                <span><i class="fas fa-music"></i> Thiết kế & Phát triển chuẩn Bộ Giáo Dục</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 4. MODALS & INTERACTIVE POPUPS -->
+
+    <!-- Audio & Song Player Modal -->
+    <div class="modal-overlay" id="songModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="songModalTitle">Trình phát bài hát</h3>
+                <button class="btn-close-modal" onclick="app.closeModal('songModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img src="" id="songModalImg" alt="Bìa bài hát" style="width:140px; height:140px; border-radius:12px; object-fit:cover; margin-bottom:12px; box-shadow:var(--shadow-md);">
+                <h4 id="songModalName" style="font-size:1.2rem; font-weight:800; color:var(--primary-blue);">Tên bài hát</h4>
+                <p id="songModalAuthor" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Tác giả</p>
+
+                <!-- Interactive Sound Synth Player Control -->
+                <div style="background:#f1f5f9; padding:16px; border-radius:12px; margin-bottom:20px;">
+                    <div style="display:flex; justify-content:center; gap:12px; margin-bottom:12px;">
+                        <button class="btn-primary" id="btnPlayAudioSynth" style="padding:10px 24px; font-weight:800; border-radius:20px; background:var(--primary-blue); color:white;">
+                            <i class="fas fa-play"></i> PHÁT NHẠC (SYNTH BEAT)
+                        </button>
+                    </div>
+                    <div id="audioWaveformVisual" style="height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
+                        <div id="audioProgressBar" style="width:0%; height:100%; background:var(--accent-pink); transition:width 0.3s linear;"></div>
+                    </div>
+                </div>
+
+                <!-- Lyrics Viewer -->
+                <div style="text-align:left; background:#fff7ed; border:1px solid #ffedd5; padding:16px; border-radius:12px;">
+                    <h5 style="color:#c2410c; font-weight:800; margin-bottom:8px;"><i class="fas fa-align-left"></i> Lời bài hát & Giai điệu:</h5>
+                    <div id="songModalLyrics" style="font-size:0.9rem; line-height:1.6; color:#475569;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pitch Ear Training Game Modal -->
+    <div class="modal-overlay" id="pitchGameModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fas fa-music"></i> Trò Chơi: Đoán Nốt Nhạc</h3>
+                <button class="btn-close-modal" onclick="app.closeModal('pitchGameModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                <p style="font-weight:700; color:#475569; margin-bottom:16px;">
+                    Hãy nhấn nút nghe âm thanh nốt nhạc và chọn đúng tên nốt nhạc tương ứng!
+                </p>
+                <button class="btn-primary" onclick="app.playTargetGameNote()" style="padding:12px 28px; font-size:1rem; font-weight:800; border-radius:30px; background:var(--accent-green); color:white; margin-bottom:20px;">
+                    <i class="fas fa-volume-up"></i> NGHE ÂM THANH NỐT MẪU
+                </button>
+
+                <!-- Piano Keys -->
+                <div class="piano-keys-container">
+                    <div class="piano-key" onclick="app.checkGameNoteAnswer('C4')">ĐÔ (C)</div>
+                    <div class="piano-key" onclick="app.checkGameNoteAnswer('D4')">RÊ (D)</div>
+                    <div class="piano-key" onclick="app.checkGameNoteAnswer('E4')">MI (E)</div>
+                    <div class="piano-key" onclick="app.checkGameNoteAnswer('G4')">SOL (G)</div>
+                    <div class="piano-key" onclick="app.checkGameNoteAnswer('A4')">LA (A)</div>
+                </div>
+
+                <div id="pitchGameResult" style="font-size:1.1rem; font-weight:800; margin-top:16px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="detailModalTitle">Chi tiết</h3>
+                <button class="btn-close-modal" onclick="app.closeModal('detailModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="detailModalBody">
+                <!-- Content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card" style="max-width:400px;">
+            <div class="modal-header">
+                <h3>Đăng Nhập Hệ Thống</h3>
+                <button class="btn-close-modal" onclick="app.closeModal('loginModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" onsubmit="app.handleLogin(event);">
+                    <div style="margin-bottom:14px;">
+                        <label style="display:block; font-weight:700; font-size:0.85rem; margin-bottom:4px;">Tài khoản / Mã học sinh:</label>
+                        <input type="text" id="loginUser" required placeholder="Nhập tài khoản..." style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label style="display:block; font-weight:700; font-size:0.85rem; margin-bottom:4px;">Mật khẩu:</label>
+                        <input type="password" id="loginPass" required placeholder="••••••••" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                    </div>
+                    <button type="submit" style="width:100%; padding:12px; background:var(--primary-blue); color:white; font-weight:800; border-radius:8px;">
+                        ĐĂNG NHẬP
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
