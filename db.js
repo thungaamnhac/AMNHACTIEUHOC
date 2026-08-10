@@ -1,4 +1,6 @@
-/**
+// db.js
+const SUPABASE_URL = 'https://hzihapberumsnilxppcb.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_eLTag-nYqSp0DQUVz-PalA_J5vGm29x';
  * CƠ SỞ DỮ LIỆU PORTAL ÂM NHẠC TIỂU HỌC
  * Lưu trữ & Quản lý: Bài học, Bài hát, Video, Mini Game, Tin tức, Thông báo, Lịch học, Thống kê
  */
