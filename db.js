@@ -1,6 +1,6 @@
 /* ==========================================================================
-   db.js - Supabase Database Client Connection & KNTT Authentic Music Data Store
-   Dự án: Hệ Thống Học Tập Âm Nhạc Khối 1-5 (Bộ sách Kết Nối Tri Thức Với Cuộc Sống)
+   db.js - Supabase Database Client Connection & Full LMS Portal Data Engine
+   Dự án: Nền Tảng Học Tập Âm Nhạc Tiểu Học Khối 1-5 (Bộ sách Kết Nối Tri Thức)
    Tác giả: thungamnhac
    ========================================================================== */
 
@@ -20,18 +20,39 @@ if (typeof supabase !== 'undefined' && SUPABASE_URL && !SUPABASE_URL.includes('Y
 }
 
 /*
- * DỮ LIỆU CHUẨN GIẢNG DẠY ÂM NHẠC KHỐI 1 - 5 (BỘ SÁCH KẾT NỐI TRI THỨC VỚI CUỘC SỐNG)
- * Bao gồm:
- * 1. Lời bài hát & Chuỗi nốt giai điệu chuẩn xác (Melody Pitch Sequence)
- * 2. Ngân hàng câu hỏi trắc nghiệm thính giác & tiết tấu cho Giáo viên thiết lập
+ * DỮ LIỆU LMS TOÀN DIỆN: PHÂN QUYỀN (ADMIN - GIÁO VIÊN - HỌC SINH)
+ * QUẢN LÝ LỚP HỌC - HỌC LIỆU KNTT - TRÒ CHƠI ÂM NHẠC
  */
-const KNTT_DATA = {
-    // --- BÀI HỌC KNTT & GIAI ĐIỆU CHUẨN XÁC ---
+const LMS_DATA = {
+    // --- NGUỜI DÙNG & PHÂN QUYỀN ---
+    users: [
+        { id: 'U001', name: 'Nguyễn Thanh Nga (Admin)', email: 'admin@amnhac.edu.vn', role: 'admin', avatar: 'fa-user-gear' },
+        { id: 'U002', name: 'Cô Hoàng Mai (Giáo viên)', email: 'hoangmai@amnhac.edu.vn', role: 'teacher', avatar: 'fa-chalkboard-user' },
+        { id: 'U003', name: 'Học sinh Nguyễn Văn An', email: 'vanan@student.edu.vn', role: 'student', classId: 'C101', grade: 3, score: 450 }
+    ],
+
+    // --- DANH SÁCH LỚP HỌC (CLASSROOMS) ---
+    classes: [
+        { id: 'C101', className: 'Lớp 3A1', grade: 3, teacherName: 'Cô Hoàng Mai', roomCode: 'AMNHAC-K3-9821', studentCount: 35 },
+        { id: 'C102', className: 'Lớp 1A2', grade: 1, teacherName: 'Thầy Trần Đức', roomCode: 'AMNHAC-K1-1204', studentCount: 32 },
+        { id: 'C103', className: 'Lớp 4A5', grade: 4, teacherName: 'Cô Lê Hằng', roomCode: 'AMNHAC-K4-4412', studentCount: 38 },
+        { id: 'C104', className: 'Lớp 5A3', grade: 5, teacherName: 'Cô Hoàng Mai', roomCode: 'AMNHAC-K5-5510', studentCount: 30 }
+    ],
+
+    // --- DANH SÁCH HỌC SINH THEO LỚP ---
+    students: [
+        { id: 'S101', name: 'Nguyễn Văn An', classId: 'C101', className: 'Lớp 3A1', grade: 3, correct: '5/5', avgTime: '3.2s', warnings: 0, score: 450 },
+        { id: 'S102', name: 'Lê Minh Khoa', classId: 'C101', className: 'Lớp 3A1', grade: 3, correct: '4/5', avgTime: '4.1s', warnings: 0, score: 420 },
+        { id: 'S103', name: 'Trần Bảo Ngọc', classId: 'C101', className: 'Lớp 3A1', grade: 3, correct: '4/5', avgTime: '4.8s', warnings: 0, score: 390 },
+        { id: 'S104', name: 'Phạm Đức Anh', classId: 'C102', className: 'Lớp 1A2', grade: 1, correct: '3/5', avgTime: '5.5s', warnings: 1, score: 310 },
+        { id: 'S105', name: 'Hoàng Thùy Linh', classId: 'C103', className: 'Lớp 4A5', grade: 4, correct: '3/5', avgTime: '6.0s', warnings: 0, score: 290 }
+    ],
+
+    // --- HỌC LIỆU ÂM NHẠC KNTT (LESSONS & MATERIALS) ---
     lessons: [
-        // KHỐI 1
         {
             id: 'L101', grade: 1, topic: 'Chủ đề 1: Âm thanh ngày mới', title: 'Tiếng trống trường em', author: 'Trần Thanh Mẫn',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-drum',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-drum', type: 'audio_lesson',
             lyrics: `Có tiếng trống trường / Vang vang khắp nơi / Giục em tới lớp / Rộn rã sắc màu.\n\nTùng tùng tùng tùng / Tiếng trống giục giã / Cho em niềm vui / Bước vào năm học mới!`,
             melody: [
                 { note: 'C4', dur: 0.4 }, { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
@@ -42,7 +63,7 @@ const KNTT_DATA = {
         },
         {
             id: 'L102', grade: 1, topic: 'Chủ đề 2: Ngôi nhà của em', title: 'Mẹ đi vắng', author: 'Trịnh Công Sơn',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-house-user',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-house-user', type: 'audio_lesson',
             lyrics: `Mẹ đi vắng, mẹ đi vắng / Con thích ở nhà con ca hát / Con thích ở nhà con nhảy múa.\n\nKhi mẹ về con nhớ mẹ / Mẹ lại ôm con vào lòng thương yêu!`,
             melody: [
                 { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
@@ -53,7 +74,7 @@ const KNTT_DATA = {
         },
         {
             id: 'L103', grade: 1, topic: 'Chủ đề 3: Thầy cô và mái trường', title: 'Thầy cô là tất cả', author: 'Bùi Anh Tấn',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-chalkboard-teacher',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-chalkboard-teacher', type: 'audio_lesson',
             lyrics: `Thầy cô như ánh sáng soi đường / Dạy cho em biết đọc biết viết / Cho em ước mơ bay cao xa vào tương lai rạng ngời!`,
             melody: [
                 { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
@@ -63,7 +84,7 @@ const KNTT_DATA = {
         },
         {
             id: 'L104', grade: 1, topic: 'Chủ đề 6: Cảnh đẹp quê hương', title: 'Quê hương tươi đẹp', author: 'Dân ca Nùng',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-mountain',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-mountain', type: 'audio_lesson',
             lyrics: `Quê hương em biết bao tươi đẹp / Rừng tre xanh mây trắng bay vờn / Kìa lúa chín vàng trên đồng quê / Vui xóm làng chào mừng mùa xuân!`,
             melody: [
                 { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'C5', dur: 0.8 },
@@ -76,7 +97,7 @@ const KNTT_DATA = {
         // KHỐI 2
         {
             id: 'L201', grade: 2, topic: 'Chủ đề 1: Sắc màu âm thanh', title: 'Mùa khai trường', author: 'Phan Trần Bảng',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-bell',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-bell', type: 'audio_lesson',
             lyrics: `Mùa thu sang bình minh rạng rỡ / Tiếng cười vui vang khắp sân trường / Cùng nắm tay rộn ràng bước tới / Chào năm học mới ngập tràn niềm tin!`,
             melody: [
                 { note: 'D4', dur: 0.4 }, { note: 'F4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'A4', dur: 0.8 },
@@ -87,7 +108,7 @@ const KNTT_DATA = {
         },
         {
             id: 'L203', grade: 2, topic: 'Chủ đề 3: Mái trường thân yêu', title: 'Khi tóc thầy bạc trắng', author: 'Trần Đức',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-school',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-school', type: 'audio_lesson',
             lyrics: `Khi tóc thầy bạc trắng / Tóc thầy bạc như sương / Cho em bài học hay / Mái trường thân yêu...`,
             melody: [
                 { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'C5', dur: 0.8 },
@@ -99,7 +120,7 @@ const KNTT_DATA = {
         // KHỐI 3
         {
             id: 'L301', grade: 3, topic: 'Chủ đề 1: Lời ca dâng Bác', title: 'Bác Hồ người cho em tất cả', author: 'Hoàng Long - Hoàng Lăng',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-heart',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-heart', type: 'audio_lesson',
             lyrics: `Cho rừng xanh rộn rã tiếng chim ca / Cho đồng quê ngát hương hoa đời / Bác Hồ người cho em tất cả / Ươm mầm xanh cho quê hương Việt Nam tươi đẹp!`,
             melody: [
                 { note: 'C4', dur: 0.4 }, { note: 'F4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.8 },
@@ -109,7 +130,7 @@ const KNTT_DATA = {
         },
         {
             id: 'L303', grade: 3, topic: 'Chủ đề 3: Âm nhạc dân gian', title: 'Lý cây xanh', author: 'Dân ca Nam Bộ',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-leaf',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-leaf', type: 'audio_lesson',
             lyrics: `Cái cây xanh xanh / Thì lá cũng xanh / Chim đậu trên cành / Chim hót lý lo / Lý lo là lý lo / Lý lo là lý lo!`,
             melody: [
                 { note: 'G4', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
@@ -121,7 +142,7 @@ const KNTT_DATA = {
         // KHỐI 4
         {
             id: 'L403', grade: 4, topic: 'Chủ đề 3: Giai điệu dân ca', title: 'Inh lả ơi', author: 'Dân ca Thái',
-            timeSignature: 'Nhịp 2/4', icon: 'fa-guitar',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-guitar', type: 'audio_lesson',
             lyrics: `Inh lả ơi, sao xáp hoa mương / Khắp núi rừng Tây Bắc bừng sáng / Mùa xuân về hoa nở thắm tươi / Mơ rừng vui tiếng hát ca ngợi!`,
             melody: [
                 { note: 'A4', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
@@ -131,7 +152,7 @@ const KNTT_DATA = {
         },
         {
             id: 'L404', grade: 4, topic: 'Chủ đề 4: Biết ơn thầy cô', title: 'Bụi phấn', author: 'Vũ Hoàng - Lê Văn Lộc',
-            timeSignature: 'Nhịp 3/4', icon: 'fa-graduation-cap',
+            timeSignature: 'Nhịp 3/4', icon: 'fa-graduation-cap', type: 'audio_lesson',
             lyrics: `Khi thầy viết bảng / Bụi phấn rơi rơi / Có hạt bụi nào / Rơi trên bục giảng / Có hạt bụi nào / Vướng trên tóc thầy...\n\nEm yêu phút giây này / Thầy em tóc như bạc thêm / Bạc thêm vì phấn trắng / Cho em bài học hay!`,
             melody: [
                 { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 },
@@ -144,7 +165,7 @@ const KNTT_DATA = {
         // KHỐI 5
         {
             id: 'L504', grade: 5, topic: 'Chủ đề 4: Tạm biệt mái trường', title: 'Mong ước kỷ niệm xưa', author: 'Xuân Phương',
-            timeSignature: 'Nhịp 4/4', icon: 'fa-star',
+            timeSignature: 'Nhịp 4/4', icon: 'fa-star', type: 'audio_lesson',
             lyrics: `Thời gian trôi qua mau / Đã qua rồi những ngày thơ / Giờ đây còn lại đây / Những kỷ niệm mến yêu...\n\nNếu có ước muốn trong cuộc đời này / Hãy nhớ ước muốn cho thời gian trở lại / Để được cùng bạn thân trao nụ cười hồn nhiên!`,
             melody: [
                 { note: 'E4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'C5', dur: 0.5 }, { note: 'B4', dur: 1.0 },
@@ -155,7 +176,7 @@ const KNTT_DATA = {
         }
     ],
 
-    // --- NGÂN HÀNG CÂU HỎI THẨM ÂM & TIẾT TẤU DÀNH CHO GIÁO VIÊN THIẾT LẬP PHÒNG ---
+    // --- TRÒ CHƠI ÂM NHẠC & CÂU HỎI TRẮC NGHIỆM ---
     teacherQuestions: [
         {
             id: 101, grade: 1, category: 'Thính giác',
@@ -202,7 +223,20 @@ const KNTT_DATA = {
     ]
 };
 
-// --- HÀM TRUY XUẤT DỮ LIỆU ---
+// --- CÁC HÀM QUẢN LÝ DỮ LIỆU (GET / SAVE / SYNC) ---
+function getLocalLMSData() {
+    const saved = localStorage.getItem('LMS_PORTAL_DATA');
+    if (saved) {
+        try { return JSON.parse(saved); } catch(e) {}
+    }
+    localStorage.setItem('LMS_PORTAL_DATA', JSON.stringify(LMS_DATA));
+    return LMS_DATA;
+}
+
+function saveLocalLMSData(data) {
+    localStorage.setItem('LMS_PORTAL_DATA', JSON.stringify(data));
+}
+
 async function getLessonsData() {
     if (supabaseClient) {
         try {
@@ -210,7 +244,7 @@ async function getLessonsData() {
             if (!error && data && data.length > 0) return data;
         } catch (e) {}
     }
-    return KNTT_DATA.lessons;
+    return getLocalLMSData().lessons;
 }
 
 async function getTeacherQuestionsData() {
@@ -220,5 +254,17 @@ async function getTeacherQuestionsData() {
             if (!error && data && data.length > 0) return data;
         } catch (e) {}
     }
-    return KNTT_DATA.teacherQuestions;
+    return getLocalLMSData().teacherQuestions;
+}
+
+async function getClassesData() {
+    return getLocalLMSData().classes;
+}
+
+async function getStudentsData() {
+    return getLocalLMSData().students;
+}
+
+async function getUsersData() {
+    return getLocalLMSData().users;
 }

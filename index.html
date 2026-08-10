@@ -54,16 +54,31 @@
                 </div>
             </div>
 
+            <!-- Quick Role Switcher Bar -->
+            <div class="role-switcher-bar">
+                <span class="role-label"><i class="fa-solid fa-user-shield"></i> Chế độ Phân Quyền:</span>
+                <button class="role-btn active" id="role-btn-admin" onclick="switchUserRole('admin')"><i class="fa-solid fa-crown"></i> Admin</button>
+                <button class="role-btn" id="role-btn-teacher" onclick="switchUserRole('teacher')"><i class="fa-solid fa-chalkboard-user"></i> Giáo Viên</button>
+                <button class="role-btn" id="role-btn-student" onclick="switchUserRole('student')"><i class="fa-solid fa-graduation-cap"></i> Học Sinh</button>
+                <button class="btn btn-sm btn-outline" onclick="openAuthModal()"><i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập</button>
+            </div>
+
             <!-- Main Navigation Tabs -->
             <nav class="main-nav">
-                <button class="nav-btn" data-tab="overview">
-                    <i class="fa-solid fa-sliders"></i> Tổng Quan Khối 1-5
+                <button class="nav-btn active" data-tab="kntt-lessons">
+                    <i class="fa-solid fa-book-bookmark"></i> Bài Học KNTT
                 </button>
-                <button class="nav-btn" data-tab="kntt-lessons">
-                    <i class="fa-solid fa-book-bookmark"></i> Bài Học Kết Nối Tri Thức
+                <button class="nav-btn role-section role-admin" data-tab="admin">
+                    <i class="fa-solid fa-user-gear"></i> Admin Quản Trị
                 </button>
-                <button class="nav-btn" data-tab="teacher">
-                    <i class="fa-solid fa-chalkboard-user"></i> Giáo Viên & Thiết Lập
+                <button class="nav-btn role-section role-teacher" data-tab="classes">
+                    <i class="fa-solid fa-users-rectangle"></i> Quản Lý Lớp Học
+                </button>
+                <button class="nav-btn role-section role-teacher" data-tab="upload">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Đăng Tải Học Liệu
+                </button>
+                <button class="nav-btn role-section role-teacher" data-tab="teacher">
+                    <i class="fa-solid fa-gear"></i> Thiết Lập Phòng & Trò Chơi
                 </button>
                 <button class="nav-btn" data-tab="student">
                     <i class="fa-solid fa-gamepad"></i> Học Sinh Tương Tác
@@ -196,6 +211,180 @@
             <!-- Lessons Grid Container -->
             <div class="kntt-grid" id="kntt-lessons-container">
                 <!-- Dynamic Content Rendered by JS -->
+            </div>
+        </section>
+
+        <!-- TAB ADMIN: QUẢN TRỊ HỆ THỐNG & PHÂN QUYỀN USER -->
+        <section id="tab-admin" class="tab-content">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-user-gear text-gold"></i> Admin Portal - Quản Lý Người Dùng & Phân Quyền</h3>
+                    <span class="badge badge-accent">Phân quyền Hệ Thống</span>
+                </div>
+                <div class="grid-2col style-margin-top">
+                    <!-- Create/Assign User Form -->
+                    <div>
+                        <h4><i class="fa-solid fa-user-plus"></i> Cấp Tài Khoản / Phân Quyền Mới</h4>
+                        <form id="admin-user-form" onsubmit="event.preventDefault(); addNewUserByAdmin();">
+                            <div class="form-group">
+                                <label>Họ và Tên:</label>
+                                <input type="text" id="admin-user-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn B" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email / Tên Đăng Nhập:</label>
+                                <input type="email" id="admin-user-email" class="form-control" placeholder="user@amnhac.edu.vn" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Vài Trò / Phân Quyền (Role):</label>
+                                <select id="admin-user-role" class="form-control">
+                                    <option value="student">Học Sinh (Student)</option>
+                                    <option value="teacher">Giáo Viên (Teacher)</option>
+                                    <option value="admin">Quản Trị Viên (Admin)</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-user-check"></i> Cấp Tài Khoản Mới</button>
+                        </form>
+                    </div>
+
+                    <!-- User Table -->
+                    <div>
+                        <h4><i class="fa-solid fa-users"></i> Danh Sách Người Dùng Hiện Tại</h4>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã</th>
+                                        <th>Họ và Tên</th>
+                                        <th>Email</th>
+                                        <th>Quyền</th>
+                                        <th>Hành Động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-tbody">
+                                    <!-- Rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB CLASSES: QUẢN LÝ LỚP HỌC & HỌC SINH (GIÁO VIÊN) -->
+        <section id="tab-classes" class="tab-content">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-users-rectangle text-gold"></i> Quản Lý Lớp Học & Danh Sách Học Sinh</h3>
+                    <button class="btn btn-sm btn-primary" onclick="showAddClassModal()"><i class="fa-solid fa-plus"></i> Tạo Lớp Mới</button>
+                </div>
+                
+                <div class="grid-2col style-margin-top">
+                    <!-- Class Cards Grid -->
+                    <div>
+                        <h4><i class="fa-solid fa-chalkboard"></i> Danh Sách Lớp Học Bạn Đang Quản Lý</h4>
+                        <div class="class-list-grid" id="teacher-classes-container">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Student Roster View -->
+                    <div>
+                        <h4><i class="fa-solid fa-id-card"></i> Danh Sách Học Sinh Lớp Được Chọn</h4>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã HS</th>
+                                        <th>Tên Học Sinh</th>
+                                        <th>Lớp</th>
+                                        <th>Điểm Số</th>
+                                        <th>Thao Tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teacher-students-tbody">
+                                    <!-- Rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB UPLOAD: QUẢN LÝ & ĐĂNG TẢI HỌC LIỆU KNTT -->
+        <section id="tab-upload" class="tab-content">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h3><i class="fa-solid fa-cloud-arrow-up text-gold"></i> Đăng Tải & Quản Lý Học Liệu Âm Nhạc</h3>
+                    <span class="badge badge-success">Dành cho Giáo viên & Admin</span>
+                </div>
+
+                <div class="grid-2col style-margin-top">
+                    <!-- Upload New Material Form -->
+                    <div>
+                        <h4><i class="fa-solid fa-file-circle-plus"></i> Đăng Tải Bài Hát / Học Liệu KNTT Mới</h4>
+                        <form id="upload-material-form" onsubmit="event.preventDefault(); handleUploadMaterial();">
+                            <div class="form-group">
+                                <label>Tên Bài Hát / Học Liệu:</label>
+                                <input type="text" id="upload-title" class="form-control" placeholder="Ví dụ: Em yêu trường em" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tác Giả / Xuất Xứ:</label>
+                                <input type="text" id="upload-author" class="form-control" placeholder="Ví dụ: Hoàng Vân / Dân ca..." required>
+                            </div>
+                            <div class="row-2col">
+                                <div class="form-group">
+                                    <label>Khối Lớp:</label>
+                                    <select id="upload-grade" class="form-control">
+                                        <option value="1">Khối 1</option>
+                                        <option value="2">Khối 2</option>
+                                        <option value="3" selected>Khối 3</option>
+                                        <option value="4">Khối 4</option>
+                                        <option value="5">Khối 5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nhịp Điệu:</label>
+                                    <select id="upload-time" class="form-control">
+                                        <option value="Nhịp 2/4">Nhịp 2/4</option>
+                                        <option value="Nhịp 3/4">Nhịp 3/4</option>
+                                        <option value="Nhịp 4/4">Nhịp 4/4</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Lời Bài Hát Đầy Đủ:</label>
+                                <textarea id="upload-lyrics" class="form-control" rows="5" placeholder="Nhập từng câu lời bài hát ở đây..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Chuỗi Nốt Giai Điệu (Cách nhau bởi dấu phẩy):</label>
+                                <input type="text" id="upload-melody-notes" class="form-control" value="C4, E4, G4, A4, G4, E4, C4" placeholder="Ví dụ: C4, D4, E4, G4, A4">
+                                <span class="form-help">Nốt nhạc chuẩn: C4, D4, E4, F4, G4, A4, B4, C5, D5, E5</span>
+                            </div>
+                            <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-upload"></i> Đăng Tải Học Liệu Mới</button>
+                        </form>
+                    </div>
+
+                    <!-- Published Materials List -->
+                    <div>
+                        <h4><i class="fa-solid fa-list-check"></i> Học Liệu Đã Đăng Tải Trên Hệ Thống</h4>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Khối</th>
+                                        <th>Tên Bài Hát</th>
+                                        <th>Tác Giả</th>
+                                        <th>Thao Tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="published-materials-tbody">
+                                    <!-- Rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -514,6 +703,37 @@
         </section>
 
     </main>
+
+    <!-- Authentication Modal (Login / Register / Role Select) -->
+    <div id="auth-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-auth">
+            <div class="modal-song-header">
+                <h3 id="auth-modal-title"><i class="fa-solid fa-right-to-bracket text-gold"></i> Đăng Nhập Hệ Thống LMS</h3>
+                <button class="btn-close-modal" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-song-body">
+                <form id="auth-form" onsubmit="event.preventDefault(); handleAuthSubmit();">
+                    <div class="form-group">
+                        <label>Email Đăng Nhập:</label>
+                        <input type="email" id="auth-email" class="form-control" placeholder="nhap.email@amnhac.edu.vn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật Khẩu:</label>
+                        <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Chọn Phân Quyền Vẫn Hạn (Role):</label>
+                        <select id="auth-role" class="form-control">
+                            <option value="student">Học Sinh (Student)</option>
+                            <option value="teacher">Giáo Viên (Teacher)</option>
+                            <option value="admin">Quản Trị Viên (Admin)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-lock-open"></i> Đăng Nhập Ngay</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Interactive Song Detail & Full Lyrics Modal -->
     <div id="song-detail-modal" class="modal-overlay hidden">

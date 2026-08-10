@@ -132,7 +132,9 @@ const musicQuestionBank = [
 
 // --- State Management ---
 let state = {
-    activeTab: 'overview',
+    activeTab: 'kntt-lessons',
+    currentRole: 'admin', // Default role for demo (admin, teacher, student)
+    currentUser: { id: 'U001', name: 'Nguyễn Thanh Nga', role: 'admin' },
     currentRoomCode: 'AMNHAC-K3-9821',
     gradeFilter: 3,
     timerSeconds: 20,
@@ -164,12 +166,238 @@ let state = {
 document.addEventListener('DOMContentLoaded', async () => {
     initNavigation();
     initPiano();
-    renderQuestionBank();
+    await renderKNTTLessons();
+    await renderQuestionBank();
     renderLeaderboard();
     initCharts();
     initAntiCheatListener();
-    await renderKNTTLessons();
+
+    // Render LMS Portal Views
+    await renderAdminUsers();
+    await renderTeacherClasses();
+    await renderTeacherStudents();
+    await renderPublishedMaterials();
+
+    switchUserRole(state.currentRole);
 });
+
+// --- Role Switcher & Authorization Logic ---
+function switchUserRole(role) {
+    state.currentRole = role;
+    state.currentUser.role = role;
+
+    // Update Role Switcher Buttons UI
+    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.getElementById(`role-btn-${role}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    // Show/Hide Role Specific Nav Tabs
+    document.querySelectorAll('.role-section').forEach(tab => {
+        if (role === 'admin') {
+            tab.style.display = 'inline-flex';
+        } else if (role === 'teacher') {
+            tab.style.display = tab.classList.contains('role-admin') ? 'none' : 'inline-flex';
+        } else {
+            tab.style.display = 'none';
+        }
+    });
+
+    logActivity('Phân quyền', `Đã chuyển sang chế độ người dùng: [${role.toUpperCase()}]`);
+}
+
+// --- Auth Modal Handlers ---
+function openAuthModal() {
+    document.getElementById('auth-modal').classList.remove('hidden');
+}
+
+function closeAuthModal() {
+    document.getElementById('auth-modal').classList.add('hidden');
+}
+
+function handleAuthSubmit() {
+    const email = document.getElementById('auth-email').value;
+    const role = document.getElementById('auth-role').value;
+
+    state.currentUser = { id: 'U_' + Date.now(), name: email.split('@')[0], email: email, role: role };
+    switchUserRole(role);
+    closeAuthModal();
+    alert(`Đăng nhập thành công với vai trò: ${role.toUpperCase()}`);
+}
+
+// --- Admin Management Functions ---
+async function renderAdminUsers() {
+    const tbody = document.getElementById('admin-users-tbody');
+    if (!tbody) return;
+
+    const users = typeof getUsersData === 'function' ? await getUsersData() : [];
+    tbody.innerHTML = users.map(u => `
+        <tr>
+            <td><strong>${u.id}</strong></td>
+            <td><i class="fa-solid ${u.avatar || 'fa-user'}"></i> ${u.name}</td>
+            <td>${u.email}</td>
+            <td><span class="badge ${u.role === 'admin' ? 'badge-accent' : u.role === 'teacher' ? 'badge-info' : 'badge-success'}">${u.role.toUpperCase()}</span></td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="deleteUserByAdmin('${u.id}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function addNewUserByAdmin() {
+    const name = document.getElementById('admin-user-name').value;
+    const email = document.getElementById('admin-user-email').value;
+    const role = document.getElementById('admin-user-role').value;
+
+    const lmsData = getLocalLMSData();
+    const newUser = { id: 'U00' + (lmsData.users.length + 1), name, email, role, avatar: 'fa-user' };
+    lmsData.users.push(newUser);
+    saveLocalLMSData(lmsData);
+
+    await renderAdminUsers();
+    alert(`Đã cấp tài khoản mới cho ${name} (${role.toUpperCase()}) thành công!`);
+}
+
+function deleteUserByAdmin(userId) {
+    let lmsData = getLocalLMSData();
+    lmsData.users = lmsData.users.filter(u => u.id !== userId);
+    saveLocalLMSData(lmsData);
+    renderAdminUsers();
+}
+
+// --- Teacher Class & Student Roster Manager ---
+async function renderTeacherClasses() {
+    const container = document.getElementById('teacher-classes-container');
+    if (!container) return;
+
+    const classes = typeof getClassesData === 'function' ? await getClassesData() : [];
+    container.innerHTML = classes.map(c => `
+        <div class="class-card" onclick="filterStudentsByClass('${c.id}')">
+            <div class="class-card-header">
+                <h4><i class="fa-solid fa-graduation-cap"></i> ${c.className}</h4>
+                <span class="badge badge-info">Khối ${c.grade}</span>
+            </div>
+            <p><i class="fa-solid fa-user-tie"></i> Giáo viên: <strong>${c.teacherName}</strong></p>
+            <p><i class="fa-solid fa-key"></i> Mã Phòng: <strong>${c.roomCode}</strong></p>
+            <div class="class-card-footer">
+                <span><i class="fa-solid fa-users"></i> Sĩ số: ${c.studentCount} Học sinh</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function renderTeacherStudents(filterClassId = 'C101') {
+    const tbody = document.getElementById('teacher-students-tbody');
+    if (!tbody) return;
+
+    const students = typeof getStudentsData === 'function' ? await getStudentsData() : [];
+    const filtered = students.filter(s => s.classId === filterClassId);
+
+    tbody.innerHTML = filtered.map(s => `
+        <tr>
+            <td><strong>${s.id}</strong></td>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.className}</td>
+            <td><strong class="text-gold">${s.score} đ</strong></td>
+            <td>
+                <button class="btn btn-sm btn-secondary" onclick="editStudentScore('${s.id}')"><i class="fa-solid fa-pen"></i> Sửa Điểm</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterStudentsByClass(classId) {
+    renderTeacherStudents(classId);
+}
+
+function showAddClassModal() {
+    const className = prompt('Nhập tên lớp học mới (Ví dụ: Lớp 2A3):');
+    if (!className) return;
+
+    let lmsData = getLocalLMSData();
+    const newClass = {
+        id: 'C' + (lmsData.classes.length + 101),
+        className: className,
+        grade: 2,
+        teacherName: 'Cô Hoàng Mai',
+        roomCode: 'AMNHAC-K2-' + Math.floor(1000 + Math.random() * 9000),
+        studentCount: 30
+    };
+    lmsData.classes.push(newClass);
+    saveLocalLMSData(lmsData);
+    renderTeacherClasses();
+    alert('Đã tạo lớp học mới thành công!');
+}
+
+function editStudentScore(studentId) {
+    const newScore = prompt('Nhập điểm số mới cho học sinh:');
+    if (newScore === null) return;
+
+    let lmsData = getLocalLMSData();
+    const st = lmsData.students.find(s => s.id === studentId);
+    if (st) {
+        st.score = parseInt(newScore) || st.score;
+        saveLocalLMSData(lmsData);
+        renderTeacherStudents(st.classId);
+    }
+}
+
+// --- Upload & Published Materials Manager ---
+async function handleUploadMaterial() {
+    const title = document.getElementById('upload-title').value;
+    const author = document.getElementById('upload-author').value;
+    const grade = parseInt(document.getElementById('upload-grade').value);
+    const time = document.getElementById('upload-time').value;
+    const lyrics = document.getElementById('upload-lyrics').value;
+    const melodyStr = document.getElementById('upload-melody-notes').value;
+
+    const notes = melodyStr.split(',').map(n => ({ note: n.trim(), dur: 0.5 }));
+
+    let lmsData = getLocalLMSData();
+    const newLesson = {
+        id: 'L_' + Date.now(),
+        grade: grade,
+        topic: `Chủ đề mở rộng Khối ${grade}`,
+        title: title,
+        author: author,
+        timeSignature: time,
+        icon: 'fa-music',
+        lyrics: lyrics,
+        melody: notes
+    };
+
+    lmsData.lessons.push(newLesson);
+    saveLocalLMSData(lmsData);
+
+    await renderPublishedMaterials();
+    await renderKNTTLessons();
+    alert(`Đã tải lên bài hát / học liệu "${title}" thành công!`);
+}
+
+async function renderPublishedMaterials() {
+    const tbody = document.getElementById('published-materials-tbody');
+    if (!tbody) return;
+
+    const lessons = typeof getLessonsData === 'function' ? await getLessonsData() : [];
+    tbody.innerHTML = lessons.map(l => `
+        <tr>
+            <td><span class="badge badge-grade">Khối ${l.grade}</span></td>
+            <td><strong>${l.title}</strong></td>
+            <td>${l.author}</td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="openSongDetailModal('${l.id}')"><i class="fa-solid fa-play"></i> Nghe</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteMaterial('${l.id}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function deleteMaterial(materialId) {
+    let lmsData = getLocalLMSData();
+    lmsData.lessons = lmsData.lessons.filter(l => l.id !== materialId);
+    saveLocalLMSData(lmsData);
+    renderPublishedMaterials();
+    renderKNTTLessons();
+}
 
 // --- KNTT Lessons Renderer ---
 let currentPlayingLesson = null;
