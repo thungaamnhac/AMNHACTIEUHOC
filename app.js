@@ -198,7 +198,7 @@ async function renderKNTTLessons(filterGrade = 'all') {
                 <div class="kntt-note"><i class="fa-solid fa-music text-accent"></i> ${l.timeSignature || 'Nhịp 2/4'}</div>
             </div>
             <div class="kntt-card-footer">
-                <button class="btn btn-sm btn-secondary" onclick="playLessonDemoNote('${l.note || 'C4'}')"><i class="fa-solid fa-volume-high"></i> Thử Nốt</button>
+                <button class="btn btn-sm btn-secondary" onclick="playLessonDemoNote('${l.id}')"><i class="fa-solid fa-volume-high"></i> Thử Nốt</button>
                 <button class="btn btn-sm btn-primary" onclick="openSongDetailModal('${l.id}')"><i class="fa-solid fa-book-open"></i> Xem Lời & Phát Giai Điệu</button>
             </div>
         </div>
@@ -211,13 +211,32 @@ function filterKNTTGrade(grade) {
     renderKNTTLessons(grade);
 }
 
-function playLessonDemoNote(noteStr) {
-    if (noteStr.includes('C4') || noteStr.includes('Đồ')) playTone(261.63, 'triangle', 0.8);
-    else if (noteStr.includes('D4') || noteStr.includes('Rê')) playTone(293.66, 'triangle', 0.8);
-    else if (noteStr.includes('E4') || noteStr.includes('Mi')) playTone(329.63, 'triangle', 0.8);
-    else if (noteStr.includes('G4') || noteStr.includes('Sol')) playTone(392.00, 'triangle', 0.8);
-    else if (noteStr.includes('A4') || noteStr.includes('La')) playTone(440.00, 'triangle', 0.8);
-    else playTone(523.25, 'sine', 0.8);
+async function playLessonDemoNote(lessonIdOrNote) {
+    const lessons = typeof getLessonsData === 'function' ? await getLessonsData() : KNTT_DATA.lessons;
+    const lesson = lessons.find(l => l.id === lessonIdOrNote || l.title.includes(lessonIdOrNote));
+
+    if (lesson && lesson.melody && lesson.melody.length >= 3) {
+        // Play 3 signature pitch notes of the song
+        const snippet = lesson.melody.slice(0, 3);
+        let delay = 0;
+        snippet.forEach((item) => {
+            setTimeout(() => {
+                if (noteFrequencies[item.note]) {
+                    playTone(noteFrequencies[item.note], 'triangle', 0.5);
+                    document.querySelectorAll('.piano-key').forEach(k => {
+                        if (k.textContent.includes(item.note)) {
+                            k.classList.add('active');
+                            setTimeout(() => k.classList.remove('active'), 400);
+                        }
+                    });
+                }
+            }, delay);
+            delay += 450;
+        });
+    } else {
+        // Fallback tone
+        playTone(261.63, 'triangle', 0.6);
+    }
 }
 
 // --- Interactive Song Detail Modal & Sequential Melody Player ---
@@ -425,37 +444,61 @@ function generateNewRoom() {
     alert(`Đã tạo phòng học mới thành công!\nMã phòng: ${state.currentRoomCode}`);
 }
 
-function filterQBank(grade) {
-    const buttons = document.querySelectorAll('.qbank-actions button');
-    buttons.forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-
-    renderQuestionBank(grade);
-}
-
-function renderQuestionBank(gradeFilter = 'all') {
+// --- Teacher Portal & Question Bank ---
+async function renderQuestionBank(gradeFilter = 'all') {
     const container = document.getElementById('qbank-list-container');
     if (!container) return;
 
+    const teacherQs = typeof getTeacherQuestionsData === 'function' ? await getTeacherQuestionsData() : KNTT_DATA.teacherQuestions;
     const filtered = gradeFilter === 'all'
-        ? musicQuestionBank
-        : musicQuestionBank.filter(q => q.grade === parseInt(gradeFilter));
+        ? teacherQs
+        : teacherQs.filter(q => q.grade === parseInt(gradeFilter));
 
     container.innerHTML = filtered.map(q => `
         <div class="qbank-item">
             <div class="qbank-item-info">
-                <h5>${q.text}</h5>
-                <span><i class="fa-solid fa-layer-group"></i> Khối ${q.grade} • <i class="fa-solid fa-bullseye"></i> Kỹ năng: ${q.skill}</span>
+                <h5>${q.question || q.text}</h5>
+                <span><i class="fa-solid fa-layer-group"></i> Khối ${q.grade} • <i class="fa-solid fa-bullseye"></i> Dạng: <strong>${q.category || q.skill}</strong> • Đáp án đúng: <em>${q.options[q.correctIndex || 0]}</em></span>
             </div>
-            <button class="btn btn-sm btn-outline" onclick="previewQuestionAudio('${q.note || 'C4'}')">
-                <i class="fa-solid fa-volume-high"></i> Nghe
+            <button class="btn btn-sm btn-primary" onclick="playTeacherQuestionAudio(${q.id})">
+                <i class="fa-solid fa-volume-high"></i> Nghe Âm Thanh Câu Hỏi
             </button>
         </div>
     `).join('');
 }
 
-function previewQuestionAudio(note) {
-    playTone(noteFrequencies[note] || 261.63, 'sine', 0.7);
+function filterQBank(grade) {
+    document.querySelectorAll('.qbank-actions button').forEach(b => b.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+    renderQuestionBank(grade);
+}
+
+async function playTeacherQuestionAudio(questionId) {
+    const teacherQs = typeof getTeacherQuestionsData === 'function' ? await getTeacherQuestionsData() : KNTT_DATA.teacherQuestions;
+    const q = teacherQs.find(item => item.id === questionId);
+    if (!q || !q.audioSequence) {
+        playTone(261.63, 'triangle', 0.8);
+        return;
+    }
+
+    let delay = 0;
+    q.audioSequence.forEach((item) => {
+        setTimeout(() => {
+            if (noteFrequencies[item.note]) {
+                playTone(noteFrequencies[item.note], 'triangle', item.dur || 0.5);
+                // Highlight piano keys
+                document.querySelectorAll('.piano-key').forEach(k => {
+                    if (k.textContent.includes(item.note)) {
+                        k.classList.add('active');
+                        setTimeout(() => k.classList.remove('active'), (item.dur || 0.5) * 800);
+                    }
+                });
+            }
+        }, delay);
+        delay += (item.dur || 0.5) * 1000 + 100;
+    });
+
+    logActivity('Giáo viên', `Phát thử âm thanh thẩm âm câu hỏi mã Q${questionId}.`);
 }
 
 function copyRoomCode() {
