@@ -172,6 +172,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // --- KNTT Lessons Renderer ---
+let currentPlayingLesson = null;
+let currentMelodyTimeout = null;
+let isMelodyPlaying = false;
+
 async function renderKNTTLessons(filterGrade = 'all') {
     const container = document.getElementById('kntt-lessons-container');
     if (!container) return;
@@ -191,10 +195,11 @@ async function renderKNTTLessons(filterGrade = 'all') {
                 <div class="kntt-icon"><i class="fa-solid ${l.icon || 'fa-music'}"></i></div>
                 <h4>${l.title}</h4>
                 <p class="kntt-author"><i class="fa-solid fa-user-pen"></i> Tác giả: <strong>${l.author}</strong></p>
-                <div class="kntt-note"><i class="fa-solid fa-music text-accent"></i> Ghi chú: ${l.note}</div>
+                <div class="kntt-note"><i class="fa-solid fa-music text-accent"></i> ${l.timeSignature || 'Nhịp 2/4'}</div>
             </div>
             <div class="kntt-card-footer">
-                <button class="btn btn-sm btn-primary" onclick="playLessonDemoNote('${l.note}')"><i class="fa-solid fa-play"></i> Nghe Thử Âm Thanh</button>
+                <button class="btn btn-sm btn-secondary" onclick="playLessonDemoNote('${l.note || 'C4'}')"><i class="fa-solid fa-volume-high"></i> Thử Nốt</button>
+                <button class="btn btn-sm btn-primary" onclick="openSongDetailModal('${l.id}')"><i class="fa-solid fa-book-open"></i> Xem Lời & Phát Giai Điệu</button>
             </div>
         </div>
     `).join('');
@@ -202,7 +207,7 @@ async function renderKNTTLessons(filterGrade = 'all') {
 
 function filterKNTTGrade(grade) {
     document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    if (event && event.target) event.target.classList.add('active');
     renderKNTTLessons(grade);
 }
 
@@ -213,6 +218,100 @@ function playLessonDemoNote(noteStr) {
     else if (noteStr.includes('G4') || noteStr.includes('Sol')) playTone(392.00, 'triangle', 0.8);
     else if (noteStr.includes('A4') || noteStr.includes('La')) playTone(440.00, 'triangle', 0.8);
     else playTone(523.25, 'sine', 0.8);
+}
+
+// --- Interactive Song Detail Modal & Sequential Melody Player ---
+async function openSongDetailModal(lessonId) {
+    const lessons = typeof getLessonsData === 'function' ? await getLessonsData() : [];
+    const lesson = lessons.find(l => l.id === lessonId);
+    if (!lesson) return;
+
+    currentPlayingLesson = lesson;
+    document.getElementById('modal-song-grade').textContent = `Khối ${lesson.grade}`;
+    document.getElementById('modal-song-time').textContent = lesson.timeSignature || 'Nhịp 2/4';
+    document.getElementById('modal-song-title').textContent = lesson.title;
+    document.getElementById('modal-song-author').querySelector('span').textContent = lesson.author;
+    document.getElementById('modal-song-lyrics').textContent = lesson.lyrics || 'Đang cập nhật lời bài hát...';
+    document.getElementById('modal-current-note').textContent = 'Bấm nút bên dưới để nghe toàn bộ giai điệu chuẩn!';
+
+    stopMelodyPlayback();
+    document.getElementById('song-detail-modal').classList.remove('hidden');
+}
+
+function closeSongDetailModal() {
+    stopMelodyPlayback();
+    document.getElementById('song-detail-modal').classList.add('hidden');
+}
+
+function togglePlayFullMelody() {
+    if (isMelodyPlaying) {
+        stopMelodyPlayback();
+    } else {
+        startMelodyPlayback();
+    }
+}
+
+function startMelodyPlayback() {
+    if (!currentPlayingLesson || !currentPlayingLesson.melody) {
+        alert('Đoạn giai điệu bài hát này đang được nạp.');
+        return;
+    }
+    isMelodyPlaying = true;
+
+    const playBtn = document.getElementById('btn-play-melody');
+    if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Tạm Dừng Giai Điệu';
+
+    const visualizer = document.getElementById('melody-visualizer');
+    if (visualizer) visualizer.classList.add('active');
+
+    let noteIndex = 0;
+    const melody = currentPlayingLesson.melody;
+
+    function playNextNote() {
+        if (!isMelodyPlaying || noteIndex >= melody.length) {
+            stopMelodyPlayback();
+            return;
+        }
+
+        const item = melody[noteIndex];
+        const noteName = item.note;
+        const dur = item.dur || 0.5;
+
+        if (noteFrequencies[noteName]) {
+            playTone(noteFrequencies[noteName], 'triangle', dur);
+            const noteDisp = document.getElementById('modal-current-note');
+            if (noteDisp) noteDisp.textContent = `🎵 Nốt nhạc: ${noteName} (Tốt nốt ${noteIndex + 1}/${melody.length})`;
+            
+            // Highlight virtual piano keys
+            document.querySelectorAll('.piano-key').forEach(k => {
+                if (k.textContent.includes(noteName)) {
+                    k.classList.add('active');
+                    setTimeout(() => k.classList.remove('active'), dur * 800);
+                }
+            });
+        }
+
+        noteIndex++;
+        currentMelodyTimeout = setTimeout(playNextNote, dur * 1000);
+    }
+
+    playNextNote();
+}
+
+function stopMelodyPlayback() {
+    isMelodyPlaying = false;
+    if (currentMelodyTimeout) {
+        clearTimeout(currentMelodyTimeout);
+        currentMelodyTimeout = null;
+    }
+    const playBtn = document.getElementById('btn-play-melody');
+    if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play"></i> Phát Giai Điệu Bài Hát';
+
+    const visualizer = document.getElementById('melody-visualizer');
+    if (visualizer) visualizer.classList.remove('active');
+
+    const noteDisp = document.getElementById('modal-current-note');
+    if (noteDisp) noteDisp.textContent = 'Đã dừng giai điệu.';
 }
 
 // --- Tab Navigation ---

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   db.js - Supabase Database Client Connection & KNTT Data Store
+   db.js - Supabase Database Client Connection & KNTT Data Store (Full Lyrics & Melodies)
    Dự án: Hệ Thống Học Tập Âm Nhạc Khối 1-5 (Bộ sách Kết Nối Tri Thức Với Cuộc Sống)
    Tác giả: thungamnhac
    ========================================================================== */
@@ -21,65 +21,132 @@ if (typeof supabase !== 'undefined' && SUPABASE_URL && !SUPABASE_URL.includes('Y
 
 /*
  * DỮ LIỆU CHUẨN ÂM NHẠC KHỐI 1 - 5 (BỘ SÁCH KẾT NỐI TRI THỨC VỚI CUỘC SỐNG)
+ * Bao gồm: Lời bài hát đầy đủ & Giai điệu chuỗi nốt nhạc phát tự động qua Synthesizer
  */
 const KNTT_DATA = {
-    // --- DÂN DANH SÁCH BÀI HỌC THEO KHỐI (KNTT) ---
     lessons: [
-        // KHỐI 1
-        { id: 'L101', grade: 1, topic: 'Chủ đề 1: Âm thanh ngày mới', title: 'Hát: Tiếng trống trường em', author: 'Trần Thanh Mẫn', note: 'Đồ - Rê - Mi', icon: 'fa-drum' },
-        { id: 'L102', grade: 1, topic: 'Chủ đề 2: Ngôi nhà của em', title: 'Hát: Mẹ đi vắng', author: 'Trịnh Công Sơn', note: 'Sol - La', icon: 'fa-house-user' },
-        { id: 'L103', grade: 1, topic: 'Chủ đề 3: Thầy cô và mái trường', title: 'Hát: Thầy cô là tất cả', author: 'Bùi Anh Tấn', note: 'Mi - Sol - La', icon: 'fa-chalkboard-teacher' },
-        { id: 'L104', grade: 1, topic: 'Chủ đề 4: Chú chim nhỏ', title: 'Hát: Chú nốt nhạc vui', author: 'Hoàng Long', note: 'Đồ - Rê - Mi - Sol', icon: 'fa-crow' },
-        { id: 'L105', grade: 1, topic: 'Chủ đề 5: Mùa xuân quê hương', title: 'Hát: Sắp đến Tết rồi', author: 'Hoàng Vân', note: 'Gõ đệm Thanh phách', icon: 'fa-sun' },
-        { id: 'L106', grade: 1, topic: 'Chủ đề 6: Cảnh đẹp quê hương', title: 'Hát: Quê hương tươi đẹp', author: 'Dân ca Nùng', note: 'Tập đọc nốt Sol-Mi', icon: 'fa-mountain' },
+        // --- KHỐI 1 ---
+        {
+            id: 'L101', grade: 1, topic: 'Chủ đề 1: Âm thanh ngày mới', title: 'Tiếng trống trường em', author: 'Trần Thanh Mẫn',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-drum',
+            lyrics: `Có tiếng trống trường / Vang vang khắp nơi / Giục em tới lớp / Rộn rã sắc màu.\n\nTùng tùng tùng tùng / Tiếng trống giục giã / Cho em niềm vui / Bước vào năm học mới!`,
+            melody: [
+                { note: 'C4', dur: 0.4 }, { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
+                { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.8 },
+                { note: 'C4', dur: 0.4 }, { note: 'D4', dur: 0.4 }, { note: 'E4', dur: 0.4 }, { note: 'D4', dur: 0.8 },
+                { note: 'C4', dur: 0.8 }
+            ]
+        },
+        {
+            id: 'L102', grade: 1, topic: 'Chủ đề 2: Ngôi nhà của em', title: 'Mẹ đi vắng', author: 'Trịnh Công Sơn',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-house-user',
+            lyrics: `Mẹ đi vắng, mẹ đi vắng / Con thích ở nhà con ca hát / Con thích ở nhà con nhảy múa.\n\nKhi mẹ về con nhớ mẹ / Mẹ lại ôm con vào lòng thương yêu!`,
+            melody: [
+                { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
+                { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.8 },
+                { note: 'D4', dur: 0.4 }, { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
+                { note: 'E4', dur: 0.4 }, { note: 'D4', dur: 0.4 }, { note: 'C4', dur: 0.8 }
+            ]
+        },
+        {
+            id: 'L103', grade: 1, topic: 'Chủ đề 3: Thầy cô và mái trường', title: 'Thầy cô là tất cả', author: 'Bùi Anh Tấn',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-chalkboard-teacher',
+            lyrics: `Thầy cô như ánh sáng soi đường / Dạy cho em biết đọc biết viết / Cho em ước mơ bay cao xa vào tương lai rạng ngời!`,
+            melody: [
+                { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
+                { note: 'C5', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 }
+            ]
+        },
+        {
+            id: 'L104', grade: 1, topic: 'Chủ đề 6: Cảnh đẹp quê hương', title: 'Quê hương tươi đẹp', author: 'Dân ca Nùng',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-mountain',
+            lyrics: `Quê hương em biết bao tươi đẹp / Rừng tre xanh mây trắng bay vờn / Kìa lúa chín vàng trên đồng quê / Vui xóm làng chào mừng mùa xuân!`,
+            melody: [
+                { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'C5', dur: 0.8 },
+                { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.8 },
+                { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.8 },
+                { note: 'D4', dur: 0.4 }, { note: 'E4', dur: 0.4 }, { note: 'C4', dur: 0.8 }
+            ]
+        },
 
-        // KHỐI 2
-        { id: 'L201', grade: 2, topic: 'Chủ đề 1: Sắc màu âm thanh', title: 'Hát: Mùa khai trường', author: 'Phan Trần Bảng', note: 'Đồ - Rê - Mi - Sol - La', icon: 'fa-bell' },
-        { id: 'L202', grade: 2, topic: 'Chủ đề 2: Em yêu hòa bình', title: 'Hát: Hòa bình cho bé', author: 'Huy Rag', note: 'Nhịp 2/4 - Phách mạnh nhẹ', icon: 'fa-dove' },
-        { id: 'L203', grade: 2, topic: 'Chủ đề 3: Mái trường thân yêu', title: 'Hát: Khi tóc thầy bạc trắng', author: 'Trần Đức', note: 'Tập đọc nốt Mi - Sol - La', icon: 'fa-school' },
-        { id: 'L204', grade: 2, topic: 'Chủ đề 4: Tuổi thơ khám phá', title: 'Hát: Món quà tặng cô', author: 'Nguyễn Văn Hiên', note: 'Gõ Song loan', icon: 'fa-gift' },
-        { id: 'L205', grade: 2, topic: 'Chủ đề 5: Âm nhạc nước ngoài', title: 'Hát: Chú cuội chơi trăng', author: 'Dân ca', note: 'Nốt Trắng & Nốt Đen', icon: 'fa-moon' },
+        // --- KHỐI 2 ---
+        {
+            id: 'L201', grade: 2, topic: 'Chủ đề 1: Sắc màu âm thanh', title: 'Mùa khai trường', author: 'Phan Trần Bảng',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-bell',
+            lyrics: `Mùa thu sang bình minh rạng rỡ / Tiếng cười vui vang khắp sân trường / Cùng nắm tay rộn ràng bước tới / Chào năm học mới ngập tràn niềm tin!`,
+            melody: [
+                { note: 'D4', dur: 0.4 }, { note: 'F4', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'A4', dur: 0.8 },
+                { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'F4', dur: 0.8 },
+                { note: 'D4', dur: 0.4 }, { note: 'F4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'F4', dur: 0.8 }
+            ]
+        },
+        {
+            id: 'L202', grade: 2, topic: 'Chủ đề 2: Em yêu hòa bình', title: 'Hòa bình cho bé', author: 'Huy Rag',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-dove',
+            lyrics: `Cờ hòa bình bay phấp phới trên trời cao / Tiếng chim bồ câu hót ríu rít mênh mang / Cho tuổi thơ em êm đềm giấc ngủ / Hát ca vui mừng dưới mái trường yêu thương!`,
+            melody: [
+                { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'B4', dur: 0.4 }, { note: 'B4', dur: 0.8 },
+                { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.8 }
+            ]
+        },
 
-        // KHỐI 3
-        { id: 'L301', grade: 3, topic: 'Chủ đề 1: Lời ca dâng Bác', title: 'Hát: Bác Hồ người cho em tất cả', author: 'Hoàng Long - Hoàng Lăng', note: 'Tập đọc nốt C4-D4-E4-G4-A4', icon: 'fa-heart' },
-        { id: 'L302', grade: 3, topic: 'Chủ đề 2: Vui bước đến trường', title: 'Hát: Bài học đầu tiên', author: 'Trương Xuân Mẫn', note: 'Hình nốt Đen, Trắng, Lặng đen', icon: 'fa-book-open' },
-        { id: 'L303', grade: 3, topic: 'Chủ đề 3: Âm nhạc dân gian', title: 'Hát: Lý cây xanh', author: 'Dân ca Nam Bộ', note: 'Nhạc cụ: Đàn Tranh, Trống cơm', icon: 'fa-leaf' },
-        { id: 'L304', grade: 3, topic: 'Chủ đề 4: Giai điệu quê hương', title: 'Hát: Cò hại', author: 'Dân ca Bắc Bộ', note: 'Tập đọc nhạc số 1 - Khóa Sol', icon: 'fa-feather' },
+        // --- KHỐI 3 ---
+        {
+            id: 'L301', grade: 3, topic: 'Chủ đề 1: Lời ca dâng Bác', title: 'Bác Hồ người cho em tất cả', author: 'Hoàng Long - Hoàng Lăng',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-heart',
+            lyrics: `Cho rừng xanh rộn rã tiếng chim ca / Cho đồng quê ngát hương hoa đời / Bác Hồ người cho em tất cả / Ươm mầm xanh cho quê hương Việt Nam tươi đẹp!`,
+            melody: [
+                { note: 'C4', dur: 0.4 }, { note: 'F4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.8 },
+                { note: 'F4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'C5', dur: 0.8 },
+                { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'F4', dur: 0.8 }
+            ]
+        },
+        {
+            id: 'L303', grade: 3, topic: 'Chủ đề 3: Âm nhạc dân gian', title: 'Lý cây xanh', author: 'Dân ca Nam Bộ',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-leaf',
+            lyrics: `Cái cây xanh xanh / Thì lá cũng xanh / Chim đậu trên cành / Chim hót lý lo / Lý lo là lý lo / Lý lo là lý lo!`,
+            melody: [
+                { note: 'G4', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
+                { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'C5', dur: 0.8 },
+                { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'E4', dur: 0.8 }
+            ]
+        },
 
-        // KHỐI 4
-        { id: 'L401', grade: 4, topic: 'Chủ đề 1: Rộn ràng ngày mới', title: 'Hát: Tiếng hát mùa hoa', author: 'Nhiều tác giả', note: 'Thực hành Đàn Recorder / Melodica', icon: 'fa-music' },
-        { id: 'L402', grade: 4, topic: 'Chủ đề 2: Tình bạn bốn phương', title: 'Hát: Thiếu nhi thế giới liên hoan', author: 'Lưu Hữu Phước', note: 'Nhịp 2/4 - Nốt Móc đơn', icon: 'fa-users' },
-        { id: 'L403', grade: 4, topic: 'Chủ đề 3: Giai điệu dân ca', title: 'Hát: Inh lả ơi', author: 'Dân ca Thái', note: 'Tập đọc nhạc số 3 - Nốt Si (B4)', icon: 'fa-guitar' },
-        { id: 'L404', grade: 4, topic: 'Chủ đề 4: Biết ơn thầy cô', title: 'Hát: Bụi phấn', author: 'Vũ Hoàng - Lê Văn Lộc', note: 'Nhịp 3/4 - Phách M-N-N', icon: 'fa-graduation-cap' },
+        // --- KHỐI 4 ---
+        {
+            id: 'L403', grade: 4, topic: 'Chủ đề 3: Giai điệu dân ca', title: 'Inh lả ơi', author: 'Dân ca Thái',
+            timeSignature: 'Nhịp 2/4', icon: 'fa-guitar',
+            lyrics: `Inh lả ơi, sao xáp hoa mương / Khắp núi rừng Tây Bắc bừng sáng / Mùa xuân về hoa nở thắm tươi / Mơ rừng vui tiếng hát ca ngợi!`,
+            melody: [
+                { note: 'A4', dur: 0.4 }, { note: 'C5', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 },
+                { note: 'E4', dur: 0.4 }, { note: 'G4', dur: 0.4 }, { note: 'A4', dur: 0.8 },
+                { note: 'C5', dur: 0.4 }, { note: 'A4', dur: 0.4 }, { note: 'G4', dur: 0.8 }
+            ]
+        },
+        {
+            id: 'L404', grade: 4, topic: 'Chủ đề 4: Biết ơn thầy cô', title: 'Bụi phấn', author: 'Vũ Hoàng - Lê Văn Lộc',
+            timeSignature: 'Nhịp 3/4', icon: 'fa-graduation-cap',
+            lyrics: `Khi thầy viết bảng / Bụi phấn rơi rơi / Có hạt bụi nào / Rơi trên bục giảng / Có hạt bụi nào / Vướng trên tóc thầy...\n\nEm yêu phút giây này / Thầy em tóc như bạc thêm / Bạc thêm vì phấn trắng / Cho em bài học hay!`,
+            melody: [
+                { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 },
+                { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 1.0 },
+                { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 },
+                { note: 'G4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
+            ]
+        },
 
-        // KHỐI 5
-        { id: 'L501', grade: 5, topic: 'Chủ đề 1: Nhớ ơn thầy cô', title: 'Hát: Bài ca người giáo viên nhân dân', author: 'Hoàng Vân', note: 'Khóa Sol - Nhịp 4/4 - Bè đơn giản', icon: 'fa-award' },
-        { id: 'L502', grade: 5, topic: 'Chủ đề 2: Quê hương đất nước', title: 'Hát: Hát mừng', author: 'Dân ca Hrê', note: 'Thực hànhRecorder hợp xướng', icon: 'fa-flag' },
-        { id: 'L503', grade: 5, topic: 'Chủ đề 3: Âm nhạc thế giới', title: 'Thường thức: Nhà soạn nhạc Mozart & Beethoven', author: 'Âm nhạc cổ điển', note: 'Cảm thụ âm nhạc & Thính giác', icon: 'fa-compact-disc' },
-        { id: 'L504', grade: 5, topic: 'Chủ đề 4: Tạm biệt mái trường', title: 'Hát: Mong ước kỷ niệm xưa', author: 'Xuân Phương', note: 'Ôn tập tổng hợp Khối 1-5', icon: 'fa-star' }
-    ],
-
-    // --- BÀI HẤT NỔI BẬT ---
-    songs: [
-        { title: 'Tiếng trống trường em', author: 'Trần Thanh Mẫn', grade: 'Khối 1', keyNote: 'C4 - E4 - G4', audioNote: 'C4' },
-        { title: 'Quê hương tươi đẹp', author: 'Dân ca Nùng', grade: 'Khối 1', keyNote: 'G4 - A4 - C5', audioNote: 'G4' },
-        { title: 'Mùa khai trường', author: 'Phan Trần Bảng', grade: 'Khối 2', keyNote: 'D4 - F4 - A4', audioNote: 'D4' },
-        { title: 'Hòa bình cho bé', author: 'Huy Rag', grade: 'Khối 2', keyNote: 'E4 - G4 - B4', audioNote: 'E4' },
-        { title: 'Bác Hồ người cho em tất cả', author: 'Hoàng Long - Hoàng Lăng', grade: 'Khối 3', keyNote: 'C4 - F4 - G4', audioNote: 'C4' },
-        { title: 'Lý cây xanh', author: 'Dân ca Nam Bộ', grade: 'Khối 3', keyNote: 'G4 - C5', audioNote: 'G4' },
-        { title: 'Inh lả ơi', author: 'Dân ca Thái', grade: 'Khối 4', keyNote: 'A4 - C5', audioNote: 'A4' },
-        { title: 'Bụi phấn', author: 'Vũ Hoàng', grade: 'Khối 4', keyNote: 'C4 - E4 - A4', audioNote: 'C4' },
-        { title: 'Hát mừng', author: 'Dân ca Hrê', grade: 'Khối 5', keyNote: 'D4 - G4 - A4', audioNote: 'D4' },
-        { title: 'Mong ước kỷ niệm xưa', author: 'Xuân Phương', grade: 'Khối 5', keyNote: 'E4 - A4 - C5', audioNote: 'E4' }
-    ],
-
-    // --- VIDEO BÀI GIẢNG ---
-    videos: [
-        { title: 'Hướng dẫn luyện đọc nốt nhạc Khối 1 (Đồ - Rê - Mi)', duration: '08:45', grade: 'Khối 1', views: '1,240' },
-        { title: 'Thực hành gõ đệm Song Loan & Thanh Phách Khối 2', duration: '12:10', grade: 'Khối 2', views: '2,150' },
-        { title: 'Phương pháp nhận biết giai điệu Dân ca Nam Bộ Khối 3', duration: '15:30', grade: 'Khối 3', views: '1,890' },
-        { title: 'Thực hành bấm ngón Đàn Recorder / Melodica Khối 4', duration: '18:20', grade: 'Khối 4', views: '3,410' },
-        { title: 'Khám phá thế giới Âm nhạc cổ điển Mozart & Beethoven Khối 5', duration: '22:00', grade: 'Khối 5', views: '4,120' }
+        // --- KHỐI 5 ---
+        {
+            id: 'L504', grade: 5, topic: 'Chủ đề 4: Tạm biệt mái trường', title: 'Mong ước kỷ niệm xưa', author: 'Xuân Phương',
+            timeSignature: 'Nhịp 4/4', icon: 'fa-star',
+            lyrics: `Thời gian trôi qua mau / Đã qua rồi những ngày thơ / Giờ đây còn lại đây / Những kỷ niệm mến yêu...\n\nNếu có ước muốn trong cuộc đời này / Hãy nhớ ước muốn cho thời gian trở lại / Để được cùng bạn thân trao nụ cười hồn nhiên!`,
+            melody: [
+                { note: 'E4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'C5', dur: 0.5 }, { note: 'B4', dur: 1.0 },
+                { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 },
+                { note: 'A4', dur: 0.5 }, { note: 'C5', dur: 0.5 }, { note: 'E5', dur: 0.5 }, { note: 'D5', dur: 1.0 },
+                { note: 'C5', dur: 0.5 }, { note: 'B4', dur: 0.5 }, { note: 'A4', dur: 1.0 }
+            ]
+        }
     ]
 };
 
@@ -89,29 +156,7 @@ async function getLessonsData() {
         try {
             const { data, error } = await supabaseClient.from('lessons').select('*');
             if (!error && data && data.length > 0) return data;
-        } catch (e) {
-            console.log('Lấy dữ liệu từ Supabase chưa có, dùng dữ liệu KNTT chuẩn.');
-        }
+        } catch (e) {}
     }
     return KNTT_DATA.lessons;
-}
-
-async function getSongsData() {
-    if (supabaseClient) {
-        try {
-            const { data, error } = await supabaseClient.from('songs').select('*');
-            if (!error && data && data.length > 0) return data;
-        } catch (e) {}
-    }
-    return KNTT_DATA.songs;
-}
-
-async function getVideosData() {
-    if (supabaseClient) {
-        try {
-            const { data, error } = await supabaseClient.from('videos').select('*');
-            if (!error && data && data.length > 0) return data;
-        } catch (e) {}
-    }
-    return KNTT_DATA.videos;
 }

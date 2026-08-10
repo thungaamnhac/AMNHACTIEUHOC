@@ -515,6 +515,50 @@
 
     </main>
 
+    <!-- Interactive Song Detail & Full Lyrics Modal -->
+    <div id="song-detail-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-song-detail">
+            <div class="modal-song-header">
+                <div>
+                    <span class="badge badge-grade" id="modal-song-grade">Khối 1</span>
+                    <span class="text-muted" id="modal-song-time">Nhịp 2/4</span>
+                </div>
+                <button class="btn-close-modal" onclick="closeSongDetailModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-song-body">
+                <div class="song-title-box">
+                    <h3 id="modal-song-title">Tên Bài Hát</h3>
+                    <p id="modal-song-author"><i class="fa-solid fa-user-pen"></i> Tác giả: <span>Nguyễn Văn A</span></p>
+                </div>
+
+                <div class="melody-player-box">
+                    <div class="player-controls">
+                        <button class="btn btn-primary" id="btn-play-melody" onclick="togglePlayFullMelody()"><i class="fa-solid fa-play"></i> Phát Giai Điệu Bài Hát</button>
+                        <button class="btn btn-secondary" onclick="stopMelodyPlayback()"><i class="fa-solid fa-stop"></i> Dừng</button>
+                    </div>
+                    <div class="melody-visualizer" id="melody-visualizer">
+                        <div class="visualizer-bar bar-1"></div>
+                        <div class="visualizer-bar bar-2"></div>
+                        <div class="visualizer-bar bar-3"></div>
+                        <div class="visualizer-bar bar-4"></div>
+                        <div class="visualizer-bar bar-5"></div>
+                    </div>
+                    <div class="current-note-display" id="modal-current-note">Sẵn sàng phát giai điệu...</div>
+                </div>
+
+                <div class="lyrics-container">
+                    <h4><i class="fa-solid fa-align-left text-gold"></i> Lời Bài Hát Chi Tiết</h4>
+                    <pre class="lyrics-text" id="modal-song-lyrics">Nội dung lời bài hát sẽ hiển thị ở đây...</pre>
+                </div>
+            </div>
+            
+            <div class="modal-song-footer">
+                <button class="btn btn-secondary btn-block" onclick="closeSongDetailModal()">Đóng Cửa Sổ</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Anti-Cheat Warning Modal Overlay -->
     <div id="anticheat-modal" class="modal-overlay hidden">
         <div class="modal-card modal-warning">
