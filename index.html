@@ -3,374 +3,551 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Âm Nhạc Tiểu Học - Yêu âm nhạc - Khơi nguồn sáng tạo</title>
-    <meta name="description" content="Cổng thông tin và Nền tảng học tập Âm nhạc Tiểu học tương tác dành cho học sinh Khối 1 - 5.">
-    
-    <!-- CSS Stylesheet & FontAwesome Icons -->
-    <link rel="stylesheet" href="style.css">
+    <title>Hệ Thống Học Tập Âm Nhạc Khối 1-5 | Classroom App (thungamnhac)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- 1. TOP HEADER & NAVIGATION BAR -->
-    <header class="top-nav-bar">
-        <div class="nav-container">
-            <!-- Brand Logo -->
-            <a href="#" class="brand-logo">
-                <div class="brand-icon">
-                    <i class="fas fa-music"></i>
-                </div>
-                <div class="brand-text">
-                    <h1>ÂM NHẠC TIỂU HỌC</h1>
-                    <p>Yêu âm nhạc - Khơi nguồn sáng tạo</p>
-                </div>
-            </a>
+    <!-- Background Animated Shapes -->
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+    <div class="bg-shape bg-shape-3"></div>
 
-            <!-- Navigation Links -->
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="#" class="nav-link active" data-nav="home"><i class="fas fa-home"></i> TRANG CHỦ</a></li>
-                    <li><a href="#" class="nav-link" data-nav="lessons"><i class="fas fa-book-open"></i> BÀI HỌC</a></li>
-                    <li><a href="#" class="nav-link" data-nav="singing"><i class="fas fa-microphone-alt"></i> HỌC HÁT</a></li>
-                    <li><a href="#" class="nav-link" data-nav="notes"><i class="fas fa-file-audio"></i> ĐỌC NHẠC</a></li>
-                    <li><a href="#" class="nav-link" data-nav="video"><i class="fas fa-video"></i> VIDEO</a></li>
-                    <li><a href="#" class="nav-link" data-nav="karaoke"><i class="fas fa-compact-disc"></i> KARAOKE</a></li>
-                    <li><a href="#" class="nav-link" data-nav="games"><i class="fas fa-gamepad"></i> TRÒ CHƠI</a></li>
-                    <li><a href="#" class="nav-link" data-nav="docs"><i class="fas fa-folder-open"></i> TÀI LIỆU</a></li>
-                    <li><a href="#" class="nav-link" data-nav="news"><i class="fas fa-newspaper"></i> TIN TỨC</a></li>
-                    <li><a href="#" class="nav-link" data-nav="contact"><i class="fas fa-envelope"></i> LIÊN HỆ</a></li>
-                </ul>
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>ÂM NHẠC KHỐI 1-5</h1>
+                    <span class="sub-title">Dự án Classroom App • Học viên: <strong>thungamnhac</strong></span>
+                </div>
+            </div>
+
+            <!-- Architecture Status Bar -->
+            <div class="system-status-bar">
+                <div class="status-badge status-fe" title="Frontend Layer">
+                    <span class="status-dot"></span>
+                    <i class="fa-solid fa-globe"></i> Frontend
+                </div>
+                <div class="status-badge status-sec" title="Middleware Security Active">
+                    <span class="status-dot pulse"></span>
+                    <i class="fa-solid fa-shield-halved"></i> Security Guard
+                </div>
+                <div class="status-badge status-be" title="Backend Logic Controller">
+                    <span class="status-dot"></span>
+                    <i class="fa-solid fa-gears"></i> Backend API
+                </div>
+                <div class="status-badge status-db" title="Supabase Database Connected">
+                    <span class="status-dot"></span>
+                    <i class="fa-solid fa-database"></i> Supabase DB
+                </div>
+            </div>
+
+            <!-- Main Navigation Tabs -->
+            <nav class="main-nav">
+                <button class="nav-btn" data-tab="overview">
+                    <i class="fa-solid fa-sliders"></i> Tổng Quan Khối 1-5
+                </button>
+                <button class="nav-btn" data-tab="kntt-lessons">
+                    <i class="fa-solid fa-book-bookmark"></i> Bài Học Kết Nối Tri Thức
+                </button>
+                <button class="nav-btn" data-tab="teacher">
+                    <i class="fa-solid fa-chalkboard-user"></i> Giáo Viên & Thiết Lập
+                </button>
+                <button class="nav-btn" data-tab="student">
+                    <i class="fa-solid fa-gamepad"></i> Học Sinh Tương Tác
+                </button>
+                <button class="nav-btn" data-tab="leaderboard">
+                    <i class="fa-solid fa-trophy"></i> Bảng Xếp Hạng
+                </button>
+                <button class="nav-btn" data-tab="analytics">
+                    <i class="fa-solid fa-chart-line"></i> Phân Tích & Báo Cáo
+                </button>
             </nav>
-
-            <!-- Login Button -->
-            <button class="btn-login" id="btnLogin">
-                <i class="fas fa-user-circle"></i> Đăng nhập
-            </button>
         </div>
     </header>
 
-    <!-- 2. MAIN CONTENT WRAPPER -->
-    <main class="main-wrapper">
-        <div class="portal-grid">
+    <!-- Main Content Container -->
+    <main class="app-main">
 
-            <!-- LEFT MAIN COLUMN (75%) -->
-            <div class="main-column">
-
-                <!-- 2.1 HERO BANNER CAROUSEL -->
-                <section class="hero-carousel-container">
-                    <button class="carousel-btn prev" id="btnPrevHero" aria-label="Slide trước"><i class="fas fa-chevron-left"></i></button>
-                    <button class="carousel-btn next" id="btnNextHero" aria-label="Slide sau"><i class="fas fa-chevron-right"></i></button>
-
-                    <div class="hero-content">
-                        <h2 class="hero-title">Học Âm nhạc vui vẻ mỗi ngày</h2>
-                        <ul class="hero-checklist">
-                            <li><i class="fas fa-check-circle"></i> Học hát</li>
-                            <li><i class="fas fa-check-circle"></i> Đọc nhạc</li>
-                            <li><i class="fas fa-check-circle"></i> Cảm thụ âm nhạc</li>
-                            <li><i class="fas fa-check-circle"></i> Trò chơi âm nhạc</li>
-                        </ul>
-                        <button class="btn-hero-cta" id="btnStartLearning">
-                            BẮT ĐẦU HỌC NGAY <i class="fas fa-arrow-right"></i>
-                        </button>
+        <!-- TAB 1: TỔNG QUAN HỆ THỐNG & ĐÀN PIANO ẢO -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="hero-card">
+                <div class="hero-info">
+                    <h2><i class="fa-solid fa-compact-disc spin-slow"></i> Nền Tảng Học Tập Âm Nhạc Tương Tác Tiểu Học</h2>
+                    <p>Bám sát chuẩn kiến thức & kỹ năng Âm nhạc Bộ Giáo dục & Đào tạo cho Học sinh từ Khối 1 đến Khối 5. Kết hợp phương pháp Gamification giúp việc học nhạc trở nên sinh động, trực quan và tràn đầy cảm hứng!</p>
+                    <div class="hero-tags">
+                        <span class="hero-tag"><i class="fa-solid fa-check"></i> Trắc nghiệm âm thanh thực</span>
+                        <span class="hero-tag"><i class="fa-solid fa-check"></i> Chống gian lận AI Guard</span>
+                        <span class="hero-tag"><i class="fa-solid fa-check"></i> Báo điểm & Đánh giá tức thì</span>
                     </div>
-
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" alt="Bé học âm nhạc" class="hero-image-banner" id="heroImg">
-
-                    <div class="carousel-indicators">
-                        <span class="dot active"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                    </div>
-                </section>
-
-                <!-- 2.2 BÀI HỌC THEO LỚP -->
-                <section class="section-block">
-                    <div class="section-header">
-                        <h2 class="section-title"><i class="fas fa-user-graduate"></i> BÀI HỌC THEO LỚP</h2>
-                        <a href="#" class="btn-see-all" onclick="app.showAllGradeLessons(); return false;">Xem tất cả</a>
-                    </div>
-
-                    <div class="grades-grid" id="gradesContainer">
-                        <!-- Dynamically Rendered 5 Grade Cards via app.js -->
-                    </div>
-                </section>
-
-                <!-- 2.3 BÀI HẤT NỔI BẬT & VIDEO BÀI GIẢNG GRID -->
-                <div class="sub-grid-2">
-                    <!-- Left: Bài hát nổi bật -->
-                    <section class="section-block">
-                        <div class="section-header">
-                            <h2 class="section-title"><i class="fas fa-music"></i> BÀI HẤT NỔI BẬT</h2>
-                            <a href="#" class="btn-see-all" onclick="app.showAllSongs(); return false;">Xem tất cả</a>
-                        </div>
-                        <div class="media-cards-grid" id="songsContainer">
-                            <!-- Rendered 4 Song Cards -->
-                        </div>
-                    </section>
-
-                    <!-- Right: Video bài giảng -->
-                    <section class="section-block">
-                        <div class="section-header">
-                            <h2 class="section-title"><i class="fas fa-video"></i> VIDEO BÀI GIẢNG</h2>
-                            <a href="#" class="btn-see-all" onclick="app.showAllVideos(); return false;">Xem tất cả</a>
-                        </div>
-                        <div class="media-cards-grid" id="videosContainer">
-                            <!-- Rendered 4 Video Cards -->
-                        </div>
-                    </section>
                 </div>
-
-                <!-- 2.4 TRÒ CHƠI ÂM NHẠC & TIN TỨC - HOẠT ĐỘNG GRID -->
-                <div class="sub-grid-2">
-                    <!-- Left: Trò chơi âm nhạc -->
-                    <section class="section-block">
-                        <div class="section-header">
-                            <h2 class="section-title"><i class="fas fa-gamepad"></i> TRÒ CHƠI ÂM NHẠC</h2>
-                            <a href="#" class="btn-see-all" onclick="app.showAllGames(); return false;">Xem tất cả</a>
-                        </div>
-                        <div class="games-cards-grid" id="gamesContainer">
-                            <!-- Rendered 4 Game Cards -->
-                        </div>
-                    </section>
-
-                    <!-- Right: Tin tức - Hoạt động -->
-                    <section class="section-block">
-                        <div class="section-header">
-                            <h2 class="section-title"><i class="fas fa-th-list"></i> TIN TỨC - HOẠT ĐỘNG</h2>
-                            <a href="#" class="btn-see-all" onclick="app.showAllNews(); return false;">Xem tất cả</a>
-                        </div>
-                        <div class="news-cards-grid" id="newsContainer">
-                            <!-- Rendered 4 News Cards -->
-                        </div>
-                    </section>
+                <div class="hero-quick-action">
+                    <div class="room-preview-box">
+                        <div class="room-label">MÃ PHÒNG HỌC MÔ PHỎNG</div>
+                        <div class="room-code-display" id="global-room-code">AMNHAC-K3-9821</div>
+                        <button class="btn btn-primary" onclick="copyRoomCode()"><i class="fa-solid fa-copy"></i> Sao chép Mã Phòng</button>
+                    </div>
                 </div>
-
             </div>
 
-            <!-- RIGHT SIDEBAR COLUMN (25%) -->
-            <aside class="sidebar-column">
+            <!-- Program Grade Modules (Khối 1 -> Khối 5) -->
+            <h3 class="section-title"><i class="fa-solid fa-layer-group"></i> Chương Trình Khối Lớp 1 - 5</h3>
+            <div class="grade-cards-grid">
+                <div class="grade-card grade-1">
+                    <div class="grade-badge">KHỐI 1</div>
+                    <div class="grade-icon"><i class="fa-solid fa-child-reaching"></i></div>
+                    <h4>Làm Quát Về Âm Thanh & Nhịp</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-music"></i> Nhận biết âm thanh cao - thấp, dài - ngắn</li>
+                        <li><i class="fa-solid fa-drum"></i> Gõ nhịp 2/4 bằng phách đơn giản</li>
+                        <li><i class="fa-solid fa-volume-high"></i> Phân biệt tiếng hát và tiếng nói</li>
+                    </ul>
+                </div>
+                <div class="grade-card grade-2">
+                    <div class="grade-badge">KHỐI 2</div>
+                    <div class="grade-icon"><i class="fa-solid fa-icons"></i></div>
+                    <h4>Hình Nốt Nhạc & Tên Nốt Đồ - Rê - Mi</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-notes-medical"></i> Ký hiệu nốt Đen, Nốt Trắng, Nốt Đơn</li>
+                        <li><i class="fa-solid fa-guitar"></i> Nhận biết nốt nhạc trên khuông nhạc đơn</li>
+                        <li><i class="fa-solid fa-ear-listen"></i> Luyện thính giác đọc tên 3 nốt Đồ-Rê-Mi</li>
+                    </ul>
+                </div>
+                <div class="grade-card grade-3">
+                    <div class="grade-badge">KHỐI 3</div>
+                    <div class="grade-icon"><i class="fa-solid fa-sliders"></i></div>
+                    <h4>5 Nốt Nhạc Cơ Bản & Nhạc Cụ Dân Tộc</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-music"></i> Thấu hiểu 5 nốt: Đồ - Rê - Mi - Sol - La</li>
+                        <li><i class="fa-solid fa-drum-steelpan"></i> Nhận biết Đàn Bầu, Đàn Tranh, Sáo Trúc</li>
+                        <li><i class="fa-solid fa-clock"></i> Đọc đúng tiết tấu nhịp 3/4 & 4/4</li>
+                    </ul>
+                </div>
+                <div class="grade-card grade-4">
+                    <div class="grade-badge">KHỐI 4</div>
+                    <div class="grade-icon"><i class="fa-solid fa-compact-disc"></i></div>
+                    <h4>Thang Âm 7 Nốt & Dấu Lặng</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-list-ol"></i> Trọn bộ 7 nốt: Đồ Rê Mi Fa Sol La Si</li>
+                        <li><i class="fa-solid fa-pause"></i> Dấu lặng đen, dấu lặng đơn</li>
+                        <li><i class="fa-solid fa-headphones"></i> Nghe và đoán giai điệu 4 câu nhạc</li>
+                    </ul>
+                </div>
+                <div class="grade-card grade-5">
+                    <div class="grade-badge">KHỐI 5</div>
+                    <div class="grade-icon"><i class="fa-solid fa-award"></i></div>
+                    <h4>Tập Đọc Nhạc & Hòa Tấu Nhạc Cụ</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-book-open-reader"></i> Bài tập đọc nhạc số 1, 2, 3</li>
+                        <li><i class="fa-solid fa-guitar"></i> Phân biệt Nhạc cụ Phương Tây (Piano, Violin)</li>
+                        <li><i class="fa-solid fa-gauge-high"></i> Thẩm âm và phân tích cường độ, nhịp độ</li>
+                    </ul>
+                </div>
+            </div>
 
-                <!-- WIDGET 1: THÔNG BÁO -->
-                <div class="sidebar-widget">
-                    <div class="widget-header blue">
-                        <i class="fas fa-bullhorn"></i> THÔNG BÁO
+            <!-- Virtual Interactive Piano Studio -->
+            <div class="piano-section">
+                <div class="piano-header">
+                    <div>
+                        <h3><i class="fa-solid fa-keyboard"></i> Đàn Piano Ảo Tương Tác (Web Audio Synthesizer)</h3>
+                        <p>Thực hành bấm phím để nghe âm thanh tần số chuẩn. Giáo viên & Học sinh có thể dùng để luyện nốt!</p>
                     </div>
-                    <div class="widget-body">
-                        <ul class="announcement-list" id="announcementsContainer">
-                            <!-- Rendered 5 Announcements -->
-                        </ul>
+                    <div class="piano-controls">
+                        <label>Âm lượng:</label>
+                        <input type="range" id="piano-volume" min="0" max="1" step="0.1" value="0.7">
+                        <button class="btn btn-secondary" onclick="playDemoMelody()"><i class="fa-solid fa-play"></i> Phát Giai Điệu Mẫu</button>
                     </div>
                 </div>
+                <div class="piano-keyboard" id="piano-keyboard">
+                    <!-- Piano keys rendered by JS -->
+                </div>
+            </div>
+        </section>
 
-                <!-- WIDGET 2: LỊCH HỌC -->
-                <div class="sidebar-widget">
-                    <div class="widget-header dark-blue">
-                        <i class="fas fa-calendar-alt"></i> LỊCH HỌC <span style="font-size:0.75rem; margin-left:auto;" id="calendarMonthTitle">Tháng 5 / 2024</span>
+        <!-- TAB KNTT: THƯ VIỆN BÀI HỌC BỘ SÁCH KẾT NỐI TRI THỨC VỚI CUỘC SỐNG -->
+        <section id="tab-kntt-lessons" class="tab-content">
+            <div class="hero-card hero-kntt">
+                <div class="hero-info">
+                    <h2><i class="fa-solid fa-book-open text-gold"></i> Chương Trình Âm Nhạc Khối 1 - 5 (Sách Kết Nối Tri Thức)</h2>
+                    <p>Hệ thống bài học chuẩn khung chương trình Bộ Giáo dục & Đào tạo. Tích hợp âm thanh minh họa, tập đọc nốt nhạc và thực hành nhạc cụ!</p>
+                    <div class="kntt-filter-bar">
+                        <button class="btn btn-sm btn-filter active" onclick="filterKNTTGrade('all')">Tất cả Khối (1-5)</button>
+                        <button class="btn btn-sm btn-filter" onclick="filterKNTTGrade(1)">Khối 1</button>
+                        <button class="btn btn-sm btn-filter" onclick="filterKNTTGrade(2)">Khối 2</button>
+                        <button class="btn btn-sm btn-filter" onclick="filterKNTTGrade(3)">Khối 3</button>
+                        <button class="btn btn-sm btn-filter" onclick="filterKNTTGrade(4)">Khối 4</button>
+                        <button class="btn btn-sm btn-filter" onclick="filterKNTTGrade(5)">Khối 5</button>
                     </div>
-                    <div class="widget-body calendar-widget">
-                        <div class="calendar-grid" id="calendarDaysGrid">
-                            <!-- Days T2 - CN & Days numbers 1-31 -->
+                </div>
+            </div>
+
+            <!-- Lessons Grid Container -->
+            <div class="kntt-grid" id="kntt-lessons-container">
+                <!-- Dynamic Content Rendered by JS -->
+            </div>
+        </section>
+
+        <!-- TAB 2: GIAO DIỆN GIÁO VIÊN & THIẾT LẬP PHÒNG -->
+        <section id="tab-teacher" class="tab-content">
+            <div class="grid-2col">
+                <!-- Room & Game Settings -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-gear"></i> Tạo Link & Thiết Lập Phòng Học</h3>
+                        <span class="badge badge-accent">Backend API</span>
+                    </div>
+
+                    <form id="teacher-settings-form">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-graduation-cap"></i> Chọn Khối Lớp Học:</label>
+                            <select id="teacher-grade-select" class="form-control">
+                                <option value="1">Khối 1 - Âm Thanh & Nhịp Đơn Giản</option>
+                                <option value="2">Khối 2 - Hình Nốt & Đồ-Rê-Mi</option>
+                                <option value="3" selected>Khối 3 - 5 Nốt Nhạc & Nhạc Cụ Dân Tộc</option>
+                                <option value="4">Khối 4 - Thang Âm 7 Nốt & Dấu Lặng</option>
+                                <option value="5">Khối 5 - Bài Tập Đọc Nhạc & Thẩm Âm</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-clock"></i> Bộ Đếm Thời Gian Suy Nghĩ (Giây / Câu):</label>
+                            <input type="number" id="teacher-timer-input" class="form-control" value="20" min="5" max="60">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-shield-halved"></i> Chế Độ Giám Sát & Chống Gian Lận (Middleware):</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="teacher-anticheat-toggle" checked>
+                                <span class="slider"></span>
+                            </div>
+                            <small class="form-help">Tự động cảnh báo và ghi nhật ký khi học sinh mở tab khác hoặc ẩn trình duyệt.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-trophy"></i> Thuật Toán Gamification Chấm Điểm:</label>
+                            <select id="teacher-scoring-algo" class="form-control">
+                                <option value="standard">Chuẩn: Điểm đúng (100đ) + Điểm tốc độ (Tối đa 50đ)</option>
+                                <option value="strict">Nghiêm ngặt: Trừ 20% điểm nếu vi phạm gian lận</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-block" onclick="generateNewRoom()">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Sinh Mã Phòng Học Mới & Cập Nhật
+                        </button>
+                    </form>
+
+                    <div class="room-status-card" id="active-room-card">
+                        <div class="room-card-header">
+                            <span>PHÒNG HỌC ĐANG HOẠT ĐỘNG</span>
+                            <span class="badge badge-success">LIVE</span>
+                        </div>
+                        <div class="room-card-body">
+                            <div class="room-code-large" id="teacher-room-code">AMNHAC-K3-9821</div>
+                            <div class="room-details">
+                                <p><i class="fa-solid fa-layer-group"></i> Lớp: <strong>Khối 3</strong></p>
+                                <p><i class="fa-solid fa-stopwatch"></i> Thời gian: <strong>20s / câu</strong></p>
+                                <p><i class="fa-solid fa-shield-check"></i> Chống gian lận: <strong class="text-success">Đang bật</strong></p>
+                            </div>
+                            <div class="room-share-link">
+                                <input type="text" id="share-link-input" readonly value="https://classroom.app/join?code=AMNHAC-K3-9821" class="form-control-sm">
+                                <button class="btn btn-sm btn-secondary" onclick="copyShareLink()"><i class="fa-solid fa-copy"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- WIDGET 3: BÀI HỌC MỚI -->
-                <div class="sidebar-widget">
-                    <div class="widget-header green">
-                        <i class="fas fa-bookmark"></i> BÀI HỌC MỚI
+                <!-- Question Bank Management -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-database"></i> Ngân Hàng Câu Hỏi & Trò Chơi (CSDL)</h3>
+                        <span class="badge badge-info">Supabase DB</span>
                     </div>
-                    <div class="widget-body">
-                        <ul class="new-lessons-list" id="newLessonsContainer">
-                            <!-- Rendered New Lessons -->
-                        </ul>
+
+                    <div class="qbank-actions">
+                        <button class="btn btn-sm btn-outline active" onclick="filterQBank('all')">Tất Cả</button>
+                        <button class="btn btn-sm btn-outline" onclick="filterQBank('1')">Khối 1</button>
+                        <button class="btn btn-sm btn-outline" onclick="filterQBank('2')">Khối 2</button>
+                        <button class="btn btn-sm btn-outline" onclick="filterQBank('3')">Khối 3</button>
+                        <button class="btn btn-sm btn-outline" onclick="filterQBank('4')">Khối 4</button>
+                        <button class="btn btn-sm btn-outline" onclick="filterQBank('5')">Khối 5</button>
+                    </div>
+
+                    <div class="qbank-list" id="qbank-list-container">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: GIAO DIỆN HỌC SINH TƯƠNG TÁC & LÀM BÀI -->
+        <section id="tab-student" class="tab-content">
+            <!-- Student Join Screen -->
+            <div id="student-login-view" class="student-box-center">
+                <div class="glass-panel login-card">
+                    <div class="login-header">
+                        <div class="login-icon"><i class="fa-solid fa-music"></i></div>
+                        <h2>Học Sinh Truy Cập Học Tập</h2>
+                        <p>Nhập Tên và Mã Phòng do Giáo viên cung cấp để bắt đầu làm bài trắc nghiệm tương tác!</p>
+                    </div>
+                    <form id="student-entry-form" onsubmit="startStudentQuiz(event)">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user-graduate"></i> Họ và Tên Học Sinh:</label>
+                            <input type="text" id="student-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn An" required value="Nguyễn Văn An">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-key"></i> Mã Phòng Học:</label>
+                            <input type="text" id="student-room-input" class="form-control uppercase" placeholder="AMNHAC-K3-9821" required value="AMNHAC-K3-9821">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                            <i class="fa-solid fa-play"></i> VÀO LÀM BÀI TRẮC NGHIỆM
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Student Active Quiz View -->
+            <div id="student-quiz-view" class="quiz-container hidden">
+                <!-- Anti-Cheat Status Header -->
+                <div class="quiz-top-bar">
+                    <div class="student-info-badge">
+                        <i class="fa-solid fa-user"></i> <span id="quiz-student-name">Nguyễn Văn An</span>
+                    </div>
+                    <div class="security-status-indicator" id="anticheat-status-indicator">
+                        <i class="fa-solid fa-shield-check text-success"></i> GIÁM SÁT CHỐNG GIAN LẬN: <span id="security-status-text">AN TOÀN</span>
+                    </div>
+                    <div class="quiz-timer-box">
+                        <i class="fa-solid fa-stopwatch spin-slow"></i>
+                        <span id="quiz-timer-countdown">20</span>s
                     </div>
                 </div>
 
-                <!-- WIDGET 4: LIÊN KẾT NHANH -->
-                <div class="sidebar-widget">
-                    <div class="widget-header orange">
-                        <i class="fas fa-bolt"></i> LIÊN KẾT NHANH
+                <!-- Quiz Main Card -->
+                <div class="glass-panel quiz-card">
+                    <div class="quiz-progress-bar">
+                        <div class="progress-fill" id="quiz-progress-fill" style="width: 20%;"></div>
                     </div>
-                    <div class="widget-body">
-                        <div class="quick-links-grid">
-                            <button class="quick-link-btn" onclick="app.openQuickLink('sgk')"><i class="fas fa-book" style="color:#ef4444;"></i> Sách giáo khoa</button>
-                            <button class="quick-link-btn" onclick="app.openQuickLink('youtube')"><i class="fab fa-youtube" style="color:#ef4444;"></i> Kênh Âm nhạc</button>
-                            <button class="quick-link-btn" onclick="app.openQuickLink('instruments')"><i class="fas fa-guitar" style="color:#f59e0b;"></i> Nhạc cụ</button>
-                            <button class="quick-link-btn" onclick="app.openQuickLink('software')"><i class="fas fa-laptop-code" style="color:#3b82f6;"></i> Phần mềm</button>
-                            <button class="quick-link-btn" onclick="app.openQuickLink('photos')"><i class="fas fa-images" style="color:#ec4899;"></i> Thư viện ảnh</button>
-                            <button class="quick-link-btn" onclick="app.openQuickLink('faq')"><i class="fas fa-question-circle" style="color:#0284c7;"></i> Hỏi đáp</button>
+
+                    <div class="question-header">
+                        <span class="question-number-badge" id="question-number">Câu 1 / 5</span>
+                        <span class="grade-tag" id="question-grade-tag">Khối 3</span>
+                    </div>
+
+                    <h3 class="question-title" id="question-text">Nghe âm thanh và cho biết đây là nốt nhạc gì?</h3>
+
+                    <!-- Audio Trigger Button for Audio Questions -->
+                    <div class="audio-play-box" id="audio-play-container">
+                        <button class="btn btn-audio-play" onclick="playQuestionSound()">
+                            <i class="fa-solid fa-volume-high"></i> BẤM ĐỂ NGHE ÂM THANH NỐT NHẠC
+                        </button>
+                        <span class="audio-note-hint"><i class="fa-solid fa-info-circle"></i> Đảm bảo bật loa trình duyệt!</span>
+                    </div>
+
+                    <!-- Question Options Grid -->
+                    <div class="options-grid" id="options-container">
+                        <!-- Rendered dynamically -->
+                    </div>
+
+                    <!-- Instant Feedback Bar -->
+                    <div class="quiz-feedback-bar hidden" id="quiz-feedback-bar">
+                        <div id="feedback-icon"></div>
+                        <div id="feedback-message"></div>
+                        <button class="btn btn-primary" id="btn-next-question" onclick="nextQuestion()">Câu Tiếp Theo <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Summary / Finish Screen -->
+            <div id="student-result-view" class="student-box-center hidden">
+                <div class="glass-panel result-card">
+                    <div class="result-icon"><i class="fa-solid fa-award"></i></div>
+                    <h2>TỔNG KẾT BÀI LÀM ÂM NHẠC</h2>
+                    <p class="result-subtitle">Chúc mừng học sinh <strong id="result-student-name">Nguyễn Văn An</strong> đã hoàn thành!</p>
+
+                    <div class="result-stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-label">Tổng Điểm</span>
+                            <span class="stat-value text-gold" id="result-total-score">450</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Số Câu Đúng</span>
+                            <span class="stat-value text-success" id="result-correct-count">5 / 5</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Cảnh Báo Gian Lận</span>
+                            <span class="stat-value" id="result-warning-count">0 Lần</span>
                         </div>
                     </div>
-                </div>
 
-                <!-- WIDGET 5: THỐNG KÊ TRUY CẬP -->
-                <div class="sidebar-widget">
-                    <div class="widget-header purple">
-                        <i class="fas fa-chart-line"></i> THỐNG KÊ TRUY CẬP
+                    <div class="result-badge-unlocked">
+                        <h4><i class="fa-solid fa-medal"></i> Danh Hiệu Đạt Được:</h4>
+                        <div class="badge-pill" id="result-badge-title">🎼 Bậc Thầy Thẩm Âm (Maestro)</div>
                     </div>
-                    <div class="widget-body">
-                        <ul class="stats-list">
-                            <li>
-                                <span class="stat-label"><i class="far fa-clock"></i> Lượt truy cập hôm nay</span>
-                                <span class="stat-value" id="statToday">1,245</span>
-                            </li>
-                            <li>
-                                <span class="stat-label"><i class="fas fa-chart-bar"></i> Lượt truy cập tuần này</span>
-                                <span class="stat-value" id="statThisWeek">12,458</span>
-                            </li>
-                            <li>
-                                <span class="stat-label"><i class="fas fa-globe"></i> Tổng lượt truy cập</span>
-                                <span class="stat-value" id="statTotal">256,789</span>
-                            </li>
-                        </ul>
+
+                    <div class="result-actions">
+                        <button class="btn btn-primary" onclick="restartQuiz()"><i class="fa-solid fa-rotate-left"></i> Làm Bài Lại</button>
+                        <button class="btn btn-secondary" onclick="switchTab('leaderboard')"><i class="fa-solid fa-trophy"></i> Xem Bảng Xếp Hạng</button>
                     </div>
                 </div>
+            </div>
+        </section>
 
-            </aside>
+        <!-- TAB 4: BẢNG XẾP HẠNG & BÁO ĐIỂM TỨC THÌ -->
+        <section id="tab-leaderboard" class="tab-content">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3><i class="fa-solid fa-trophy text-gold"></i> Bảng Xếp Hạng & Báo Điểm Tức Thì</h3>
+                        <p>Cập nhật kết quả công khai, chính xác dựa trên Điểm số & Tốc độ làm bài!</p>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="renderLeaderboard()"><i class="fa-solid fa-rotate"></i> Làm Mới</button>
+                </div>
 
-        </div>
+                <div class="leaderboard-podium">
+                    <div class="podium-item rank-2">
+                        <div class="podium-avatar"><i class="fa-solid fa-user-astronaut"></i></div>
+                        <div class="podium-name">Lê Minh Khoa</div>
+                        <div class="podium-score">420 điểm</div>
+                        <div class="podium-step">2</div>
+                    </div>
+                    <div class="podium-item rank-1">
+                        <div class="podium-crown"><i class="fa-solid fa-crown text-gold"></i></div>
+                        <div class="podium-avatar"><i class="fa-solid fa-user-ninja"></i></div>
+                        <div class="podium-name" id="podium-top1-name">Nguyễn Văn An</div>
+                        <div class="podium-score" id="podium-top1-score">450 điểm</div>
+                        <div class="podium-step">1</div>
+                    </div>
+                    <div class="podium-item rank-3">
+                        <div class="podium-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                        <div class="podium-name">Trần Bảo Ngọc</div>
+                        <div class="podium-score">390 điểm</div>
+                        <div class="podium-step">3</div>
+                    </div>
+                </div>
+
+                <!-- Full Leaderboard Table -->
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th># Hạng</th>
+                                <th>Họ và Tên Học Sinh</th>
+                                <th>Khối Lớp</th>
+                                <th>Số Câu Đúng</th>
+                                <th>Thời Gian TB</th>
+                                <th>Vi Phạm Anti-Cheat</th>
+                                <th>Tổng Điểm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-table-body">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: PHÂN TÍCH & THỐNG KÊ & BÁO CÁO -->
+        <section id="tab-analytics" class="tab-content">
+            <div class="analytics-actions-bar">
+                <div>
+                    <h3><i class="fa-solid fa-chart-pie"></i> Mô-Đun Phân Tích & Thống Kê Tiến Trình Học Tập</h3>
+                    <p>Tổng hợp tỷ lệ đúng/sai theo kỹ năng & Trích xuất dữ liệu kết quả học tập</p>
+                </div>
+                <div class="export-btn-group">
+                    <button class="btn btn-secondary" onclick="exportDataCSV()"><i class="fa-solid fa-file-csv"></i> Xuất CSV (Bảng Điểm)</button>
+                    <button class="btn btn-secondary" onclick="exportDataJSON()"><i class="fa-solid fa-file-code"></i> Xuất JSON (Hệ Thống)</button>
+                    <button class="btn btn-primary" onclick="exportReportPDF()"><i class="fa-solid fa-file-export"></i> Trích Xuất Báo Cáo Sơ Đồ (PDF)</button>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <div class="glass-panel">
+                    <h4><i class="fa-solid fa-chart-column"></i> Tỷ Lệ Đạt Yêu Cầu Theo Khối Lớp (Khối 1 - 5)</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="gradePerformanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <h4><i class="fa-solid fa-chart-donut"></i> Phân Tích Năng Lực Theo Kỹ Năng Âm Nhạc</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="skillRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Flow Log -->
+            <div class="glass-panel style-margin-top">
+                <div class="panel-header">
+                    <h4><i class="fa-solid fa-timeline"></i> Nhật Ký Sơ Đồ Hoạt Động Hệ Thống (Audit Log)</h4>
+                    <span class="badge badge-outline">Supabase Profiles Sync</span>
+                </div>
+                <div class="activity-log-list" id="activity-log-container">
+                    <div class="log-item">
+                        <span class="log-time">21:54:10</span>
+                        <span class="log-tag tag-system">[Hệ thống]</span>
+                        <span class="log-text">Khởi tạo Middleware giám sát chống gian lận & controller xử lý logic.</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-time">21:54:15</span>
+                        <span class="log-tag tag-teacher">[Giáo viên]</span>
+                        <span class="log-text">Tạo thành công phòng học Khối 3 - Mã phòng: <strong>AMNHAC-K3-9821</strong>.</span>
+                    </div>
+                    <div class="log-item">
+                        <span class="log-time">21:54:22</span>
+                        <span class="log-tag tag-student">[Học sinh]</span>
+                        <span class="log-text">Học sinh <strong>Nguyễn Văn An</strong> nhập mã phòng và đăng nhập hệ thống.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- 3. FOOTER -->
-    <footer class="main-footer">
-        <div class="footer-container">
-            <!-- Footer Brand -->
-            <div class="footer-brand">
-                <i class="fas fa-music" style="font-size: 2.2rem; color:#bae6fd;"></i>
-                <div class="brand-text">
-                    <h2>ÂM NHẠC TIỂU HỌC</h2>
-                    <p>Yêu âm nhạc - Khơi nguồn sáng tạo</p>
-                </div>
+    <!-- Anti-Cheat Warning Modal Overlay -->
+    <div id="anticheat-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-warning">
+            <div class="modal-icon"><i class="fa-solid fa-triangle-exclamation text-danger"></i></div>
+            <h3>CẢNH BÁO CHỐNG GIAN LẬN!</h3>
+            <p>Hệ thống giám sát (Middleware Security) phát hiện bạn đã <strong>rời khỏi màn hình làm bài / chuyển tab</strong>!</p>
+            <div class="warning-box">
+                Vi phạm đã được ghi lại vào Nhật ký báo cáo của Giáo viên. Nếu tiếp tục chuyển tab, bài làm sẽ tự động dừng.
             </div>
-
-            <!-- Footer Teacher Info -->
-            <div class="footer-info">
-                <p><strong>Giáo viên phụ trách:</strong> Trần Thị Thu Nga</p>
-                <p><strong>Email:</strong> amnhactieuhoc@gmail.com</p>
-                <p><strong>Điện thoại:</strong> 0901 234 567</p>
-            </div>
-
-            <!-- Footer Social Connect -->
-            <div class="footer-social">
-                <span style="font-size: 0.82rem; font-weight:700;">Kết nối với chúng tôi:</span>
-                <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-icon" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="social-icon" aria-label="Zalo"><i class="fas fa-comment-dots"></i></a>
-                <a href="#" class="social-icon" aria-label="Website"><i class="fas fa-globe"></i></a>
-            </div>
-
-            <!-- Footer Copyright -->
-            <div class="footer-copyright">
-                <span>© 2024 Âm nhạc Tiểu học. All rights reserved.</span>
-                <span><i class="fas fa-music"></i> Thiết kế & Phát triển chuẩn Bộ Giáo Dục</span>
-            </div>
-        </div>
-    </footer>
-
-    <!-- 4. MODALS & INTERACTIVE POPUPS -->
-
-    <!-- Audio & Song Player Modal -->
-    <div class="modal-overlay" id="songModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 id="songModalTitle">Trình phát bài hát</h3>
-                <button class="btn-close-modal" onclick="app.closeModal('songModal')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <img src="" id="songModalImg" alt="Bìa bài hát" style="width:140px; height:140px; border-radius:12px; object-fit:cover; margin-bottom:12px; box-shadow:var(--shadow-md);">
-                <h4 id="songModalName" style="font-size:1.2rem; font-weight:800; color:var(--primary-blue);">Tên bài hát</h4>
-                <p id="songModalAuthor" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Tác giả</p>
-
-                <!-- Interactive Sound Synth Player Control -->
-                <div style="background:#f1f5f9; padding:16px; border-radius:12px; margin-bottom:20px;">
-                    <div style="display:flex; justify-content:center; gap:12px; margin-bottom:12px;">
-                        <button class="btn-primary" id="btnPlayAudioSynth" style="padding:10px 24px; font-weight:800; border-radius:20px; background:var(--primary-blue); color:white;">
-                            <i class="fas fa-play"></i> PHÁT NHẠC (SYNTH BEAT)
-                        </button>
-                    </div>
-                    <div id="audioWaveformVisual" style="height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
-                        <div id="audioProgressBar" style="width:0%; height:100%; background:var(--accent-pink); transition:width 0.3s linear;"></div>
-                    </div>
-                </div>
-
-                <!-- Lyrics Viewer -->
-                <div style="text-align:left; background:#fff7ed; border:1px solid #ffedd5; padding:16px; border-radius:12px;">
-                    <h5 style="color:#c2410c; font-weight:800; margin-bottom:8px;"><i class="fas fa-align-left"></i> Lời bài hát & Giai điệu:</h5>
-                    <div id="songModalLyrics" style="font-size:0.9rem; line-height:1.6; color:#475569;"></div>
-                </div>
-            </div>
+            <button class="btn btn-danger" onclick="closeAntiCheatModal()">Đã Hiểu & Quay Lai Bài Làm</button>
         </div>
     </div>
 
-    <!-- Pitch Ear Training Game Modal -->
-    <div class="modal-overlay" id="pitchGameModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fas fa-music"></i> Trò Chơi: Đoán Nốt Nhạc</h3>
-                <button class="btn-close-modal" onclick="app.closeModal('pitchGameModal')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body" style="text-align:center;">
-                <p style="font-weight:700; color:#475569; margin-bottom:16px;">
-                    Hãy nhấn nút nghe âm thanh nốt nhạc và chọn đúng tên nốt nhạc tương ứng!
-                </p>
-                <button class="btn-primary" onclick="app.playTargetGameNote()" style="padding:12px 28px; font-size:1rem; font-weight:800; border-radius:30px; background:var(--accent-green); color:white; margin-bottom:20px;">
-                    <i class="fas fa-volume-up"></i> NGHE ÂM THANH NỐT MẪU
-                </button>
-
-                <!-- Piano Keys -->
-                <div class="piano-keys-container">
-                    <div class="piano-key" onclick="app.checkGameNoteAnswer('C4')">ĐÔ (C)</div>
-                    <div class="piano-key" onclick="app.checkGameNoteAnswer('D4')">RÊ (D)</div>
-                    <div class="piano-key" onclick="app.checkGameNoteAnswer('E4')">MI (E)</div>
-                    <div class="piano-key" onclick="app.checkGameNoteAnswer('G4')">SOL (G)</div>
-                    <div class="piano-key" onclick="app.checkGameNoteAnswer('A4')">LA (A)</div>
-                </div>
-
-                <div id="pitchGameResult" style="font-size:1.1rem; font-weight:800; margin-top:16px;"></div>
-            </div>
+    <!-- Printable Report Template Container (Hidden normally, shown when printing) -->
+    <div id="printable-report" class="printable-area hidden">
+        <div class="print-header">
+            <h2>BÁO CÁO KẾT QUẢ & SƠ ĐỒ HOẠT ĐỘNG HỌC TẬP ÂM NHẠC</h2>
+            <p>Dự án: Classroom App | Học viên: thungamnhac | Thời gian xuất: <span id="print-date"></span></p>
+        </div>
+        <hr>
+        <div class="print-body">
+            <h3>1. Sơ đồ luồng hệ thống đã thực thi:</h3>
+            <p>Giao diện Web (Client) ➜ Middleware Kiểm tra quyền & Giám sát ➜ Controller xử lý Logic ➜ Supabase Database</p>
+            <h3>2. Kết quả tổng hợp bài làm:</h3>
+            <div id="print-table-placeholder"></div>
         </div>
     </div>
 
-    <!-- General Detail Modal -->
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 id="detailModalTitle">Chi tiết</h3>
-                <button class="btn-close-modal" onclick="app.closeModal('detailModal')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body" id="detailModalBody">
-                <!-- Content injected dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-card" style="max-width:400px;">
-            <div class="modal-header">
-                <h3>Đăng Nhập Hệ Thống</h3>
-                <button class="btn-close-modal" onclick="app.closeModal('loginModal')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm" onsubmit="app.handleLogin(event);">
-                    <div style="margin-bottom:14px;">
-                        <label style="display:block; font-weight:700; font-size:0.85rem; margin-bottom:4px;">Tài khoản / Mã học sinh:</label>
-                        <input type="text" id="loginUser" required placeholder="Nhập tài khoản..." style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
-                    </div>
-                    <div style="margin-bottom:20px;">
-                        <label style="display:block; font-weight:700; font-size:0.85rem; margin-bottom:4px;">Mật khẩu:</label>
-                        <input type="password" id="loginPass" required placeholder="••••••••" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
-                    </div>
-                    <button type="submit" style="width:100%; padding:12px; background:var(--primary-blue); color:white; font-weight:800; border-radius:8px;">
-                        ĐĂNG NHẬP
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- JS Scripts -->
-   <script src="db.js"></script>
+    <!-- Supabase JS Client (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- DB Connection Layer -->
+    <script src="db.js"></script>
+    <!-- JS Main Application Logic -->
     <script src="app.js"></script>
 </body>
 </html>

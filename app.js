@@ -1,483 +1,745 @@
-/**
- * APP CONTROLLER & INTERACTIVE UX LOGIC
- * Quản lý toàn bộ trải nghiệm người dùng, render dữ liệu & tương tác Web Audio API
- */
+/* ==========================================================================
+   Classroom App - Hệ Thống Học Tập Âm Nhạc Khối 1-5 (Application Logic)
+   Author: thungamnhac
+   ========================================================================== */
 
-class AppController {
-    constructor() {
-        this.currentHeroIndex = 0;
-        this.heroImages = [
-            "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=600&q=80"
-        ];
-        this.targetGameNote = 'C4';
-        this.init();
+// --- Global Audio Synthesizer Engine (Web Audio API) ---
+let audioCtx = null;
+
+function getAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
-
-    init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.renderGradeCards();
-            this.renderSongs();
-            this.renderVideos();
-            this.renderGames();
-            this.renderNews();
-            this.renderAnnouncements();
-            this.renderCalendar();
-            this.renderNewLessons();
-            this.renderStats();
-            this.setupEventListeners();
-            this.startHeroAutoSlide();
-        });
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
     }
-
-    // 1. RENDER BÀI HỌC THEO LỚP (5 CARDS ROW)
-    renderGradeCards() {
-        const container = document.getElementById('gradesContainer');
-        if (!container) return;
-        const grades = db.getGradeLessons();
-
-        container.innerHTML = grades.map(g => `
-            <div class="grade-card" style="background: ${g.bgGradient};">
-                <div class="grade-header-banner" style="background-color: ${g.themeColor};">
-                    <h3>${g.title}</h3>
-                </div>
-                <div class="grade-body">
-                    <ul class="grade-highlights">
-                        ${g.highlights.map(h => `<li>${h}</li>`).join('')}
-                    </ul>
-                    <button class="btn-grade-view" style="background-color: ${g.badgeBg};" onclick="app.openGradeDetail(${g.grade})">
-                        Xem ngay
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // 2. RENDER BÀI HẤT NỔI BẬT (4 CARDS)
-    renderSongs() {
-        const container = document.getElementById('songsContainer');
-        if (!container) return;
-        const songs = db.getSongs();
-
-        container.innerHTML = songs.map(s => `
-            <div class="song-card" onclick="app.openSongPlayer('${s.id}')">
-                <div class="media-thumb">
-                    <img src="${s.image}" alt="${s.title}">
-                    <span class="duration-tag">${s.duration}</span>
-                    <div class="play-overlay"><i class="fas fa-play-circle"></i></div>
-                </div>
-                <div class="media-info">
-                    <div class="media-title">${s.title}</div>
-                    <span class="badge-tag" style="background-color: ${s.badgeColor};">${s.badge}</span>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // 3. RENDER VIDEO BÀI GIẢNG (4 CARDS)
-    renderVideos() {
-        const container = document.getElementById('videosContainer');
-        if (!container) return;
-        const videos = db.getVideos();
-
-        container.innerHTML = videos.map(v => `
-            <div class="video-card" onclick="app.openVideoModal('${v.id}')">
-                <div class="media-thumb">
-                    <img src="${v.image}" alt="${v.title}">
-                    <span class="duration-tag">${v.duration}</span>
-                    <div class="play-overlay"><i class="fas fa-play"></i></div>
-                </div>
-                <div class="media-info">
-                    <div class="media-title">${v.title}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // 4. RENDER TRÒ CHƠI ÂM NHẠC (4 CARDS)
-    renderGames() {
-        const container = document.getElementById('gamesContainer');
-        if (!container) return;
-        const games = db.getGames();
-
-        container.innerHTML = games.map(g => `
-            <div class="game-item-card" onclick="app.launchGame('${g.type}')">
-                <div class="game-icon-box" style="background: ${g.bg};">
-                    <i class="${g.icon}"></i>
-                </div>
-                <div class="game-title">${g.title}</div>
-            </div>
-        `).join('');
-    }
-
-    // 5. RENDER TIN TỨC - HOẠT ĐỘNG (4 CARDS)
-    renderNews() {
-        const container = document.getElementById('newsContainer');
-        if (!container) return;
-        const news = db.getNews();
-
-        container.innerHTML = news.map(n => `
-            <div class="news-card-item" onclick="app.openNewsDetail('${n.id}')">
-                <img src="${n.image}" alt="${n.title}" class="news-thumb">
-                <div class="news-content">
-                    <div class="news-title">${n.title}</div>
-                    <div class="news-date">${n.date}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // 6. RENDER THÔNG BÁO (RIGHT SIDEBAR)
-    renderAnnouncements() {
-        const container = document.getElementById('announcementsContainer');
-        if (!container) return;
-        const announcements = db.getAnnouncements();
-
-        container.innerHTML = announcements.map(a => `
-            <li onclick="app.openAnnouncementDetail('${a.id}')" style="cursor:pointer;">
-                <span class="anc-title"><i class="${a.icon}"></i> ${a.title}</span>
-                <span class="anc-date">${a.date}</span>
-            </li>
-        `).join('');
-    }
-
-    // 7. RENDER LỊCH HỌC (RIGHT SIDEBAR)
-    renderCalendar() {
-        const grid = document.getElementById('calendarDaysGrid');
-        if (!grid) return;
-        const schedules = db.getSchedules();
-
-        const headers = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-        let html = headers.map(h => `<div class="cal-day-header">${h}</div>`).join('');
-
-        // Calendar May 2024 starts on Wednesday (offset 2 empty slots)
-        html += `<div></div><div></div>`;
-
-        for (let d = 1; d <= 31; d++) {
-            const isHighlight = d === schedules.highlightDay;
-            html += `
-                <div class="cal-day ${isHighlight ? 'highlight' : ''}" onclick="app.checkCalendarDay(${d})">
-                    ${d}
-                </div>
-            `;
-        }
-
-        grid.innerHTML = html;
-    }
-
-    // 8. RENDER BÀI HỌC MỚI (RIGHT SIDEBAR)
-    renderNewLessons() {
-        const container = document.getElementById('newLessonsContainer');
-        if (!container) return;
-        const newLessons = db.getNewLessons();
-
-        container.innerHTML = newLessons.map(nl => `
-            <li>
-                <span class="lesson-title-text"><i class="fas fa-notes-medical"></i> ${nl.title}</span>
-                <span class="grade-badge-sm" style="background-color: ${nl.badgeBg};">${nl.grade}</span>
-            </li>
-        `).join('');
-    }
-
-    // 9. RENDER THỐNG KÊ TRUY CẬP
-    renderStats() {
-        const stats = db.getStats();
-        if (document.getElementById('statToday')) document.getElementById('statToday').innerText = stats.today.toLocaleString('vi-VN');
-        if (document.getElementById('statThisWeek')) document.getElementById('statThisWeek').innerText = stats.thisWeek.toLocaleString('vi-VN');
-        if (document.getElementById('statTotal')) document.getElementById('statTotal').innerText = stats.total.toLocaleString('vi-VN');
-    }
-
-    // EVENT LISTENERS & CAROUSEL
-    setupEventListeners() {
-        // Hero Next/Prev
-        const btnNext = document.getElementById('btnNextHero');
-        const btnPrev = document.getElementById('btnPrevHero');
-        if (btnNext) btnNext.addEventListener('click', () => this.nextHeroSlide());
-        if (btnPrev) btnPrev.addEventListener('click', () => this.prevHeroSlide());
-
-        // Login Modal Trigger
-        const btnLogin = document.getElementById('btnLogin');
-        if (btnLogin) btnLogin.addEventListener('click', () => this.openModal('loginModal'));
-
-        // Start Learning CTA
-        const btnStart = document.getElementById('btnStartLearning');
-        if (btnStart) btnStart.addEventListener('click', () => this.openGradeDetail(1));
-    }
-
-    startHeroAutoSlide() {
-        setInterval(() => {
-            this.nextHeroSlide();
-        }, 5000);
-    }
-
-    nextHeroSlide() {
-        this.currentHeroIndex = (this.currentHeroIndex + 1) % this.heroImages.length;
-        this.updateHeroDisplay();
-    }
-
-    prevHeroSlide() {
-        this.currentHeroIndex = (this.currentHeroIndex - 1 + this.heroImages.length) % this.heroImages.length;
-        this.updateHeroDisplay();
-    }
-
-    updateHeroDisplay() {
-        const img = document.getElementById('heroImg');
-        if (img) img.src = this.heroImages[this.currentHeroIndex];
-
-        const dots = document.querySelectorAll('.carousel-indicators .dot');
-        dots.forEach((dot, idx) => {
-            if (idx === this.currentHeroIndex) dot.classList.add('active');
-            else dot.classList.remove('active');
-        });
-    }
-
-    // INTERACTIVE MODAL MANAGERS
-    openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) modal.classList.add('active');
-    }
-
-    closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) modal.classList.remove('active');
-    }
-
-    // SONG PLAYER & SOUND SYNTH
-    openSongPlayer(songId) {
-        const songs = db.getSongs();
-        const song = songs.find(s => s.id === songId);
-        if (!song) return;
-
-        document.getElementById('songModalName').innerText = song.title;
-        document.getElementById('songModalAuthor').innerText = `Tác giả: ${song.author} • Thẻ: ${song.badge}`;
-        document.getElementById('songModalImg').src = song.image;
-        document.getElementById('songModalLyrics').innerHTML = song.lyrics.map(l => `<p style="margin-bottom:6px;">🎵 ${l}</p>`).join('');
-
-        const playBtn = document.getElementById('btnPlayAudioSynth');
-        playBtn.onclick = () => {
-            audioSynth.playMelody(song.audioNotes, 500);
-            
-            // Progress Bar Animation
-            const progressBar = document.getElementById('audioProgressBar');
-            progressBar.style.width = '0%';
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 5;
-                progressBar.style.width = width + '%';
-                if (width >= 100) clearInterval(interval);
-            }, 180);
-        };
-
-        this.openModal('songModal');
-    }
-
-    // INTERACTIVE GAMES HANDLER
-    launchGame(gameType) {
-        if (gameType === 'pitch_ear') {
-            this.openPitchGame();
-        } else if (gameType === 'doors') {
-            this.openSecretDoorsGame();
-        } else if (gameType === 'wheel') {
-            this.openWheelGame();
-        } else {
-            this.openQuizizzGame();
-        }
-    }
-
-    openPitchGame() {
-        const notes = ['C4', 'D4', 'E4', 'G4', 'A4'];
-        this.targetGameNote = notes[Math.floor(Math.random() * notes.length)];
-        document.getElementById('pitchGameResult').innerText = '';
-        this.openModal('pitchGameModal');
-        audioSynth.playNote(this.targetGameNote, 1.0);
-    }
-
-    playTargetGameNote() {
-        audioSynth.playNote(this.targetGameNote, 1.0);
-    }
-
-    checkGameNoteAnswer(chosenNote) {
-        audioSynth.playNote(chosenNote, 0.6);
-        const resultDiv = document.getElementById('pitchGameResult');
-        if (chosenNote === this.targetGameNote) {
-            resultDiv.innerHTML = `<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> CHÍNH XÁC! Bạn đoán rất giỏi! 🎉</span>`;
-            setTimeout(() => {
-                const notes = ['C4', 'D4', 'E4', 'G4', 'A4'];
-                this.targetGameNote = notes[Math.floor(Math.random() * notes.length)];
-                audioSynth.playNote(this.targetGameNote, 1.0);
-            }, 1200);
-        } else {
-            resultDiv.innerHTML = `<span style="color:#ef4444;"><i class="fas fa-times-circle"></i> Chưa đúng rồi, hãy thử nghe lại nhé!</span>`;
-        }
-    }
-
-    openSecretDoorsGame() {
-        document.getElementById('detailModalTitle').innerText = 'Trò chơi: Ô cửa bí mật';
-        document.getElementById('detailModalBody').innerHTML = `
-            <p style="font-weight:700; color:#475569; margin-bottom:12px;">Nhấn vào từng ô cửa để trả lời câu hỏi nhạc lý:</p>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <button onclick="alert('Câu hỏi 1: Nốt Đô nằm ở dòng kẻ phụ thứ mấy?\\n-> Dòng kẻ phụ thứ 1 dưới khuông!'); audioSynth.playNote('C4');" style="padding:20px; background:#a855f7; color:white; font-weight:800; border-radius:10px;">Ô CỬA 1 🚪</button>
-                <button onclick="alert('Câu hỏi 2: Hình nốt Đen có độ dài bằng mấy phách?\\n-> 1 Phách!'); audioSynth.playNote('E4');" style="padding:20px; background:#6366f1; color:white; font-weight:800; border-radius:10px;">Ô CỬA 2 🚪</button>
-                <button onclick="alert('Câu hỏi 3: Nhịp 2/4 có mấy phách trong 1 ô nhịp?\\n-> 2 Phách!'); audioSynth.playNote('G4');" style="padding:20px; background:#ec4899; color:white; font-weight:800; border-radius:10px;">Ô CỬA 3 🚪</button>
-                <button onclick="alert('Câu hỏi 4: Đàn Piano thuộc dòng nhạc cụ gì?\\n-> Nhạc cụ phím gõ!'); audioSynth.playNote('C5');" style="padding:20px; background:#06b6d4; color:white; font-weight:800; border-radius:10px;">Ô CỬA 4 🚪</button>
-            </div>
-        `;
-        this.openModal('detailModal');
-    }
-
-    openWheelGame() {
-        document.getElementById('detailModalTitle').innerText = 'Trò chơi: Chiếc nón kỳ diệu';
-        document.getElementById('detailModalBody').innerHTML = `
-            <div style="text-align:center; padding:10px;">
-                <div id="wheelBox" style="width:160px; height:160px; border-radius:50%; border:8px solid #f59e0b; background:conic-gradient(#ef4444 0deg 90deg, #3b82f6 90deg 180deg, #10b981 180deg 270deg, #ec4899 270deg 360deg); margin:0 auto 16px; transition:transform 3s cubic-bezier(0.15, 0.9, 0.15, 1);"></div>
-                <button onclick="
-                    const deg = Math.floor(Math.random() * 1440) + 720;
-                    document.getElementById('wheelBox').style.transform = 'rotate(' + deg + 'deg)';
-                    audioSynth.playMelody(['C4','E4','G4','C5']);
-                    setTimeout(() => alert('Chúc mừng bạn nhận được 100 Điểm Thưởng Âm Nhạc! 🎉'), 3100);
-                " style="padding:10px 24px; background:#f59e0b; color:white; font-weight:800; border-radius:20px;">
-                    <i class="fas fa-sync-alt"></i> QUAY VÒNG QUAY
-                </button>
-            </div>
-        `;
-        this.openModal('detailModal');
-    }
-
-    openQuizizzGame() {
-        document.getElementById('detailModalTitle').innerText = 'Trò chơi: Quizizz Âm Nhạc';
-        document.getElementById('detailModalBody').innerHTML = `
-            <div style="padding:10px;">
-                <h4 style="font-weight:800; color:var(--primary-blue); margin-bottom:12px;">Câu 1: Nhạc sĩ Phạm Tuyên là tác giả của bài hát nào dưới đây?</h4>
-                <div style="display:flex; flex-direction:column; gap:8px;">
-                    <button onclick="alert('Đúng rồi! Bài hát Cả tuần đều ngoan!'); audioSynth.playNote('C5');" style="padding:10px; background:#f1f5f9; text-align:left; font-weight:700; border-radius:8px; border:1px solid #cbd5e1;">A. Cả tuần đều ngoan</button>
-                    <button onclick="alert('Chưa chính xác!');" style="padding:10px; background:#f1f5f9; text-align:left; font-weight:700; border-radius:8px; border:1px solid #cbd5e1;">B. Em yêu mái trường</button>
-                    <button onclick="alert('Chưa chính xác!');" style="padding:10px; background:#f1f5f9; text-align:left; font-weight:700; border-radius:8px; border:1px solid #cbd5e1;">C. Đếm sao</button>
-                </div>
-            </div>
-        `;
-        this.openModal('detailModal');
-    }
-
-    // OTHER DETAIL MODALS
-    openGradeDetail(gradeNum) {
-        const grades = db.getGradeLessons();
-        const grade = grades.find(g => g.grade === gradeNum);
-        if (!grade) return;
-
-        document.getElementById('detailModalTitle').innerText = `Bài học chương trình - ${grade.title}`;
-        document.getElementById('detailModalBody').innerHTML = `
-            <div style="background:${grade.bgGradient}; padding:16px; border-radius:12px; margin-bottom:16px;">
-                <h4 style="color:${grade.themeColor}; font-weight:800; font-size:1.1rem; margin-bottom:8px;">Nội dung chính:</h4>
-                <ul style="list-style:disc; margin-left:20px; font-weight:700; color:#334155;">
-                    ${grade.highlights.map(h => `<li>${h}</li>`).join('')}
-                </ul>
-            </div>
-            <h5 style="font-weight:800; color:var(--primary-blue); margin-bottom:8px;">Danh sách tiết học:</h5>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                ${grade.lessons.map(l => `
-                    <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px; border-radius:8px;">
-                        <strong style="color:#1e293b;">${l.title}</strong>
-                        <p style="font-size:0.82rem; color:#64748b;">${l.desc}</p>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        this.openModal('detailModal');
-    }
-
-    openVideoModal(vidId) {
-        const videos = db.getVideos();
-        const video = videos.find(v => v.id === vidId);
-        if (!video) return;
-
-        document.getElementById('detailModalTitle').innerText = video.title;
-        document.getElementById('detailModalBody').innerHTML = `
-            <div style="text-align:center;">
-                <img src="${video.image}" alt="${video.title}" style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
-                <h4 style="font-weight:800; color:var(--primary-blue);">${video.subtitle}</h4>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">Thời lượng: ${video.duration}</p>
-                <button onclick="alert('Đang kết nối luồng phát Video bài giảng...'); audioSynth.playNote('E4');" style="padding:10px 24px; background:var(--accent-red); color:white; font-weight:800; border-radius:20px;">
-                    <i class="fas fa-play-circle"></i> BẮT ĐẦU XEM VIDEO
-                </button>
-            </div>
-        `;
-        this.openModal('detailModal');
-    }
-
-    openNewsDetail(newsId) {
-        const news = db.getNews();
-        const item = news.find(n => n.id === newsId);
-        if (!item) return;
-
-        document.getElementById('detailModalTitle').innerText = item.title;
-        document.getElementById('detailModalBody').innerHTML = `
-            <img src="${item.image}" alt="${item.title}" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:12px;">
-            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;"><i class="far fa-calendar-alt"></i> Ngày đăng: ${item.date}</p>
-            <p style="font-size:0.92rem; line-height:1.6; color:#334155;">${item.summary}</p>
-        `;
-        this.openModal('detailModal');
-    }
-
-    openAnnouncementDetail(ancId) {
-        const ancList = db.getAnnouncements();
-        const anc = ancList.find(a => a.id === ancId);
-        if (!anc) return;
-
-        document.getElementById('detailModalTitle').innerText = 'Chi tiết thông báo';
-        document.getElementById('detailModalBody').innerHTML = `
-            <h4 style="color:var(--primary-blue); font-weight:800; margin-bottom:8px;">${anc.title}</h4>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;"><i class="far fa-calendar-alt"></i> Ngày thông báo: ${anc.date}</p>
-            <p style="font-size:0.9rem; color:#475569;">Thông báo tới toàn thể giáo viên và học sinh các khối lớp chuẩn bị tham gia theo đúng kế hoạch ban giám hiệu.</p>
-        `;
-        this.openModal('detailModal');
-    }
-
-    checkCalendarDay(dayNum) {
-        const schedules = db.getSchedules();
-        const eventText = schedules.events[dayNum.toString()];
-
-        document.getElementById('detailModalTitle').innerText = `Lịch học & Sự kiện - Ngày ${dayNum}/05/2024`;
-        document.getElementById('detailModalBody').innerHTML = eventText ? `
-            <div style="background:#fef2f2; border:1px solid #fecaca; padding:14px; border-radius:10px; color:#b91c1c;">
-                <h4 style="font-weight:800;"><i class="fas fa-star"></i> Sự kiện nổi bật:</h4>
-                <p style="font-size:0.92rem; font-weight:700; margin-top:4px;">${eventText}</p>
-            </div>
-        ` : `
-            <p style="color:#64748b;">Không có sự kiện đặc biệt trong ngày ${dayNum}/05/2024. Tiết học diễn ra theo thời khóa biểu bình thường.</p>
-        `;
-        this.openModal('detailModal');
-    }
-
-    openQuickLink(type) {
-        const links = {
-            sgk: "Bộ Sách Giáo Khoa Âm Nhạc Cánh Diều / Kết Nối Tri Thức Khối 1-5",
-            youtube: "Kênh Video Hướng Dẫn Hát & Thổi Sáo Recorder Tiểu Học",
-            instruments: "Danh Mục Nhạc Cụ: Thanh Phách, Song Loan, Tri-ăng, Ukulele",
-            software: "Phần Mềm Luyện Nốt Nhạc & Bàn Phím Piano Ảo",
-            photos: "Thư Viện Ảnh Hoạt Động Văn Nghệ Trường Học",
-            faq: "Giải Đáp Thắc Mắc Về Môn Học & Thi Học Kỳ Âm Nhạc"
-        };
-        document.getElementById('detailModalTitle').innerText = 'Liên kết nhanh';
-        document.getElementById('detailModalBody').innerHTML = `
-            <h4 style="color:#c2410c; font-weight:800; margin-bottom:8px;">${links[type]}</h4>
-            <p style="font-size:0.9rem; color:#475569;">Hệ thống đang mở tài nguyên học tập chuẩn Bộ Giáo Dục cho học sinh & giáo viên...</p>
-        `;
-        this.openModal('detailModal');
-    }
-
-    handleLogin(e) {
-        e.preventDefault();
-        const user = document.getElementById('loginUser').value;
-        alert(`Đăng nhập thành công! Chào mừng ${user} đến với Portal Âm Nhạc Tiểu Học.`);
-        this.closeModal('loginModal');
-    }
-
-    showAllGradeLessons() { this.openGradeDetail(1); }
-    showAllSongs() { this.openSongPlayer('song-1'); }
-    showAllVideos() { this.openVideoModal('vid-1'); }
-    showAllGames() { this.launchGame('pitch_ear'); }
-    showAllNews() { this.openNewsDetail('news-1'); }
+    return audioCtx;
 }
 
-const app = new AppController();
+const noteFrequencies = {
+    'C4': 261.63, 'C#4': 277.18,
+    'D4': 293.66, 'D#4': 311.13,
+    'E4': 329.63,
+    'F4': 349.23, 'F#4': 369.99,
+    'G4': 392.00, 'G#4': 415.30,
+    'A4': 440.00, 'A#4': 466.16,
+    'B4': 493.88,
+    'C5': 523.25
+};
+
+function playTone(freq, type = 'sine', duration = 0.6) {
+    try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        const vol = parseFloat(document.getElementById('piano-volume')?.value || 0.7);
+
+        osc.type = type;
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(vol, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+    } catch (e) {
+        console.warn('Audio Context Error:', e);
+    }
+}
+
+// --- Data: Question Bank Khối 1 - 5 ---
+const musicQuestionBank = [
+    // Khối 1
+    {
+        id: 101, grade: 1, type: 'audio', note: 'C4',
+        text: 'Nghe âm thanh và cho biết đây là nốt nhạc gì?',
+        options: ['Nốt Đồ (C4)', 'Nốt Rê (D4)', 'Nốt Mi (E4)', 'Nốt Sol (G4)'],
+        answerIndex: 0,
+        skill: 'Thính giác'
+    },
+    {
+        id: 102, grade: 1, type: 'text',
+        text: 'Âm thanh của tiếng trống trường kêu "Tùng tùng tùng" có tính chất gì?',
+        options: ['Dài và mượt mà', 'Rõ ràng, vang và có nhịp điệu', 'Rất cao và nhọn', 'Im lặng'],
+        answerIndex: 1,
+        skill: 'Kiến thức chung'
+    },
+    // Khối 2
+    {
+        id: 201, grade: 2, type: 'text',
+        text: 'Hình nốt Trắng (White note) có độ dài ngân bằng mấy phách?',
+        options: ['1 Phách', '2 Phách', '3 Phách', '4 Phách'],
+        answerIndex: 1,
+        skill: 'Nhịp điệu'
+    },
+    {
+        id: 202, grade: 2, type: 'audio', note: 'E4',
+        text: 'Lắng nghe âm thanh sau đây và xác định tên nốt nhạc:',
+        options: ['Nốt Đồ', 'Nốt Rê', 'Nốt Mi (E4)', 'Nốt La'],
+        answerIndex: 2,
+        skill: 'Thính giác'
+    },
+    // Khối 3
+    {
+        id: 301, grade: 3, type: 'audio', note: 'G4',
+        text: 'Nghe âm thanh tần số chuẩn và chọn nốt đúng:',
+        options: ['Nốt Sol (G4)', 'Nốt La (A4)', 'Nốt Si (B4)', 'Nốt Đồ (C4)'],
+        answerIndex: 0,
+        skill: 'Đọc nhạc'
+    },
+    {
+        id: 302, grade: 3, type: 'text',
+        text: 'Nhạc cụ dân tộc nào sau đây chỉ có duy nhất 1 dây?',
+        options: ['Đàn Tranh', 'Đàn Bầu', 'Đàn Nhị', 'Sáo Trúc'],
+        answerIndex: 1,
+        skill: 'Nhạc cụ'
+    },
+    {
+        id: 303, grade: 3, type: 'text',
+        text: 'Nhịp 2/4 bao gồm mấy phách trong một ô nhịp?',
+        options: ['2 phách (Phách 1 mạnh, phách 2 nhẹ)', '3 phách', '4 phách', '1 phách'],
+        answerIndex: 0,
+        skill: 'Nhịp điệu'
+    },
+    // Khối 4
+    {
+        id: 401, grade: 4, type: 'audio', note: 'A4',
+        text: 'Nghe nốt thanh âm chuẩn A4 (440Hz) và chọn đáp án:',
+        options: ['Nốt Fa (F4)', 'Nốt La (A4)', 'Nốt Si (B4)', 'Nốt Rê (D4)'],
+        answerIndex: 1,
+        skill: 'Thính giác'
+    },
+    {
+        id: 402, grade: 4, type: 'text',
+        text: 'Ký hiệu "Dấu Lặng Đen" yêu cầu người biểu diễn làm gì?',
+        options: ['Hát thật to', 'Nghỉ đúng bằng giá trị 1 phách nốt đen', 'Hát thật nhanh', 'Đổi sang nốt khác'],
+        answerIndex: 1,
+        skill: 'Đọc nhạc'
+    },
+    // Khối 5
+    {
+        id: 501, grade: 5, type: 'text',
+        text: 'Thang âm tự nhiên (Major Scale) cơ bản gồm bao nhiêu nốt nhạc?',
+        options: ['5 Nốt', '6 Nốt', '7 Nốt (Đồ Rê Mi Fa Sol La Si)', '12 Nốt'],
+        answerIndex: 2,
+        skill: 'Kiến thức chung'
+    }
+];
+
+// --- State Management ---
+let state = {
+    activeTab: 'overview',
+    currentRoomCode: 'AMNHAC-K3-9821',
+    gradeFilter: 3,
+    timerSeconds: 20,
+    antiCheatEnabled: true,
+
+    // Student Quiz State
+    studentName: 'Nguyễn Văn An',
+    currentQuizQuestions: [],
+    currentQuestionIndex: 0,
+    userAnswers: [],
+    totalScore: 0,
+    correctCount: 0,
+    warningCount: 0,
+    timerInterval: null,
+    timeRemaining: 20,
+    quizActive: false,
+
+    // Leaderboard
+    leaderboardData: [
+        { name: 'Nguyễn Văn An', grade: 'Khối 3', correct: '5/5', avgTime: '3.2s', warnings: 0, score: 450 },
+        { name: 'Lê Minh Khoa', grade: 'Khối 3', correct: '4/5', avgTime: '4.1s', warnings: 0, score: 420 },
+        { name: 'Trần Bảo Ngọc', grade: 'Khối 3', correct: '4/5', avgTime: '4.8s', warnings: 0, score: 390 },
+        { name: 'Phạm Đức Anh', grade: 'Khối 2', correct: '3/5', avgTime: '5.5s', warnings: 1, score: 310 },
+        { name: 'Hoàng Thùy Linh', grade: 'Khối 4', correct: '3/5', avgTime: '6.0s', warnings: 0, score: 290 }
+    ]
+};
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', async () => {
+    initNavigation();
+    initPiano();
+    renderQuestionBank();
+    renderLeaderboard();
+    initCharts();
+    initAntiCheatListener();
+    await renderKNTTLessons();
+});
+
+// --- KNTT Lessons Renderer ---
+async function renderKNTTLessons(filterGrade = 'all') {
+    const container = document.getElementById('kntt-lessons-container');
+    if (!container) return;
+
+    let lessons = typeof getLessonsData === 'function' ? await getLessonsData() : [];
+    if (filterGrade !== 'all') {
+        lessons = lessons.filter(l => l.grade === parseInt(filterGrade));
+    }
+
+    container.innerHTML = lessons.map(l => `
+        <div class="kntt-card grade-border-${l.grade}">
+            <div class="kntt-card-header">
+                <span class="badge badge-grade">Khối ${l.grade}</span>
+                <span class="kntt-topic">${l.topic}</span>
+            </div>
+            <div class="kntt-card-body">
+                <div class="kntt-icon"><i class="fa-solid ${l.icon || 'fa-music'}"></i></div>
+                <h4>${l.title}</h4>
+                <p class="kntt-author"><i class="fa-solid fa-user-pen"></i> Tác giả: <strong>${l.author}</strong></p>
+                <div class="kntt-note"><i class="fa-solid fa-music text-accent"></i> Ghi chú: ${l.note}</div>
+            </div>
+            <div class="kntt-card-footer">
+                <button class="btn btn-sm btn-primary" onclick="playLessonDemoNote('${l.note}')"><i class="fa-solid fa-play"></i> Nghe Thử Âm Thanh</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterKNTTGrade(grade) {
+    document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    renderKNTTLessons(grade);
+}
+
+function playLessonDemoNote(noteStr) {
+    if (noteStr.includes('C4') || noteStr.includes('Đồ')) playTone(261.63, 'triangle', 0.8);
+    else if (noteStr.includes('D4') || noteStr.includes('Rê')) playTone(293.66, 'triangle', 0.8);
+    else if (noteStr.includes('E4') || noteStr.includes('Mi')) playTone(329.63, 'triangle', 0.8);
+    else if (noteStr.includes('G4') || noteStr.includes('Sol')) playTone(392.00, 'triangle', 0.8);
+    else if (noteStr.includes('A4') || noteStr.includes('La')) playTone(440.00, 'triangle', 0.8);
+    else playTone(523.25, 'sine', 0.8);
+}
+
+// --- Tab Navigation ---
+function initNavigation() {
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.getAttribute('data-tab');
+            switchTab(targetTab);
+        });
+    });
+}
+
+function switchTab(tabId) {
+    state.activeTab = tabId;
+
+    // Update Nav buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+    });
+
+    // Update Tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.toggle('active', content.id === `tab-${tabId}`);
+    });
+
+    // Refresh tab specific views
+    if (tabId === 'leaderboard') renderLeaderboard();
+}
+
+// --- Virtual Piano Component ---
+function initPiano() {
+    const container = document.getElementById('piano-keyboard');
+    if (!container) return;
+
+    const keysConfig = [
+        { note: 'C4', label: 'Đồ (C4)', type: 'white' },
+        { note: 'C#4', label: 'C#', type: 'black' },
+        { note: 'D4', label: 'Rê (D4)', type: 'white' },
+        { note: 'D#4', label: 'D#', type: 'black' },
+        { note: 'E4', label: 'Mi (E4)', type: 'white' },
+        { note: 'F4', label: 'Fa (F4)', type: 'white' },
+        { note: 'F#4', label: 'F#', type: 'black' },
+        { note: 'G4', label: 'Sol (G4)', type: 'white' },
+        { note: 'G#4', label: 'G#', type: 'black' },
+        { note: 'A4', label: 'La (A4)', type: 'white' },
+        { note: 'A#4', label: 'A#', type: 'black' },
+        { note: 'B4', label: 'Si (B4)', type: 'white' },
+        { note: 'C5', label: 'Đồ (C5)', type: 'white' }
+    ];
+
+    container.innerHTML = '';
+    keysConfig.forEach(k => {
+        const keyDiv = document.createElement('div');
+        keyDiv.className = `piano-key ${k.type}`;
+        keyDiv.textContent = k.label;
+        keyDiv.addEventListener('mousedown', () => {
+            playPianoKey(k.note, keyDiv);
+        });
+        container.appendChild(keyDiv);
+    });
+}
+
+function playPianoKey(note, keyElement) {
+    if (noteFrequencies[note]) {
+        playTone(noteFrequencies[note], 'triangle', 0.8);
+        if (keyElement) {
+            keyElement.classList.add('active');
+            setTimeout(() => keyElement.classList.remove('active'), 250);
+        }
+    }
+}
+
+function playDemoMelody() {
+    const melody = [
+        { note: 'C4', duration: 400 },
+        { note: 'D4', duration: 400 },
+        { note: 'E4', duration: 400 },
+        { note: 'C4', duration: 400 },
+        { note: 'E4', duration: 400 },
+        { note: 'G4', duration: 800 }
+    ];
+
+    melody.forEach((item, index) => {
+        setTimeout(() => {
+            playTone(noteFrequencies[item.note], 'triangle', 0.5);
+        }, index * 450);
+    });
+    logActivity('Hệ thống', 'Phát giai điệu mẫu Piano Ảo cho lớp học.');
+}
+
+// --- Teacher Portal & Question Bank ---
+function generateNewRoom() {
+    const grade = document.getElementById('teacher-grade-select').value;
+    const timer = parseInt(document.getElementById('teacher-timer-input').value) || 20;
+    const anticheat = document.getElementById('teacher-anticheat-toggle').checked;
+
+    state.gradeFilter = parseInt(grade);
+    state.timerSeconds = timer;
+    state.antiCheatEnabled = anticheat;
+
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    state.currentRoomCode = `AMNHAC-K${grade}-${randomNum}`;
+
+    document.getElementById('global-room-code').textContent = state.currentRoomCode;
+    document.getElementById('teacher-room-code').textContent = state.currentRoomCode;
+    document.getElementById('share-link-input').value = `https://classroom.app/join?code=${state.currentRoomCode}`;
+    document.getElementById('student-room-input').value = state.currentRoomCode;
+
+    logActivity('Giáo viên', `Sinh mã phòng mới: ${state.currentRoomCode} (Khối ${grade}, Thời gian: ${timer}s)`);
+    alert(`Đã tạo phòng học mới thành công!\nMã phòng: ${state.currentRoomCode}`);
+}
+
+function filterQBank(grade) {
+    const buttons = document.querySelectorAll('.qbank-actions button');
+    buttons.forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    renderQuestionBank(grade);
+}
+
+function renderQuestionBank(gradeFilter = 'all') {
+    const container = document.getElementById('qbank-list-container');
+    if (!container) return;
+
+    const filtered = gradeFilter === 'all'
+        ? musicQuestionBank
+        : musicQuestionBank.filter(q => q.grade === parseInt(gradeFilter));
+
+    container.innerHTML = filtered.map(q => `
+        <div class="qbank-item">
+            <div class="qbank-item-info">
+                <h5>${q.text}</h5>
+                <span><i class="fa-solid fa-layer-group"></i> Khối ${q.grade} • <i class="fa-solid fa-bullseye"></i> Kỹ năng: ${q.skill}</span>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="previewQuestionAudio('${q.note || 'C4'}')">
+                <i class="fa-solid fa-volume-high"></i> Nghe
+            </button>
+        </div>
+    `).join('');
+}
+
+function previewQuestionAudio(note) {
+    playTone(noteFrequencies[note] || 261.63, 'sine', 0.7);
+}
+
+function copyRoomCode() {
+    navigator.clipboard.writeText(state.currentRoomCode);
+    alert('Đã sao chép Mã phòng học: ' + state.currentRoomCode);
+}
+
+function copyShareLink() {
+    const link = document.getElementById('share-link-input').value;
+    navigator.clipboard.writeText(link);
+    alert('Đã sao chép Link tham gia!');
+}
+
+// --- Student View & Interactive Quiz Engine ---
+function startStudentQuiz(e) {
+    e.preventDefault();
+    const nameInput = document.getElementById('student-name').value.trim();
+    if (!nameInput) return;
+
+    state.studentName = nameInput;
+    state.currentQuizQuestions = musicQuestionBank.filter(q => q.grade === state.gradeFilter);
+    if (state.currentQuizQuestions.length === 0) {
+        state.currentQuizQuestions = musicQuestionBank.slice(0, 5);
+    }
+    state.currentQuestionIndex = 0;
+    state.userAnswers = [];
+    state.totalScore = 0;
+    state.correctCount = 0;
+    state.warningCount = 0;
+    state.quizActive = true;
+
+    document.getElementById('student-login-view').classList.add('hidden');
+    document.getElementById('student-result-view').classList.add('hidden');
+    document.getElementById('student-quiz-view').classList.remove('hidden');
+
+    document.getElementById('quiz-student-name').textContent = state.studentName;
+
+    logActivity('Học sinh', `Học sinh ${state.studentName} tham gia phòng ${state.currentRoomCode}`);
+
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const q = state.currentQuizQuestions[state.currentQuestionIndex];
+    if (!q) {
+        finishStudentQuiz();
+        return;
+    }
+
+    document.getElementById('question-number').textContent = `Câu ${state.currentQuestionIndex + 1} / ${state.currentQuizQuestions.length}`;
+    document.getElementById('question-grade-tag').textContent = `Khối ${q.grade}`;
+    document.getElementById('question-text').textContent = q.text;
+
+    // Progress bar
+    const progressPercent = ((state.currentQuestionIndex + 1) / state.currentQuizQuestions.length) * 100;
+    document.getElementById('quiz-progress-fill').style.width = `${progressPercent}%`;
+
+    // Audio box display
+    const audioBox = document.getElementById('audio-play-container');
+    if (q.type === 'audio') {
+        audioBox.classList.remove('hidden');
+    } else {
+        audioBox.classList.add('hidden');
+    }
+
+    // Options grid
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = q.options.map((opt, idx) => `
+        <button class="option-btn" onclick="selectAnswer(${idx}, this)">
+            <span class="opt-label">${String.fromCharCode(65 + idx)}.</span> ${opt}
+        </button>
+    `).join('');
+
+    // Hide feedback bar
+    document.getElementById('quiz-feedback-bar').classList.add('hidden');
+
+    // Reset & Start Timer
+    startQuestionTimer();
+}
+
+function playQuestionSound() {
+    const q = state.currentQuizQuestions[state.currentQuestionIndex];
+    if (q && q.note) {
+        playTone(noteFrequencies[q.note], 'triangle', 1.0);
+    } else {
+        playTone(329.63, 'sine', 0.8);
+    }
+}
+
+function startQuestionTimer() {
+    clearInterval(state.timerInterval);
+    state.timeRemaining = state.timerSeconds;
+    document.getElementById('quiz-timer-countdown').textContent = state.timeRemaining;
+
+    state.timerInterval = setInterval(() => {
+        state.timeRemaining--;
+        document.getElementById('quiz-timer-countdown').textContent = state.timeRemaining;
+
+        if (state.timeRemaining <= 0) {
+            clearInterval(state.timerInterval);
+            timeOutAnswer();
+        }
+    }, 1000);
+}
+
+function selectAnswer(selectedIndex, btnElem) {
+    if (!state.quizActive) return;
+    clearInterval(state.timerInterval);
+
+    const q = state.currentQuizQuestions[state.currentQuestionIndex];
+    const isCorrect = selectedIndex === q.answerIndex;
+
+    const allButtons = document.querySelectorAll('.option-btn');
+    allButtons.forEach(b => b.disabled = true);
+
+    if (isCorrect) {
+        btnElem.classList.add('correct');
+        const speedBonus = Math.round((state.timeRemaining / state.timerSeconds) * 50);
+        const questionScore = 100 + speedBonus;
+        state.totalScore += questionScore;
+        state.correctCount++;
+        showFeedback(true, `Chính xác! (+${questionScore} điểm)`);
+    } else {
+        btnElem.classList.add('wrong');
+        allButtons[q.answerIndex].classList.add('correct');
+        showFeedback(false, `Chưa đúng! Đáp án đúng là: ${q.options[q.answerIndex]}`);
+    }
+}
+
+function timeOutAnswer() {
+    const allButtons = document.querySelectorAll('.option-btn');
+    allButtons.forEach(b => b.disabled = true);
+    const q = state.currentQuizQuestions[state.currentQuestionIndex];
+    allButtons[q.answerIndex].classList.add('correct');
+    showFeedback(false, 'Hết thời gian suy nghĩ!');
+}
+
+function showFeedback(isCorrect, message) {
+    const feedbackBar = document.getElementById('quiz-feedback-bar');
+    const iconDiv = document.getElementById('feedback-icon');
+    const msgDiv = document.getElementById('feedback-message');
+
+    feedbackBar.classList.remove('hidden');
+    if (isCorrect) {
+        iconDiv.innerHTML = '<i class="fa-solid fa-circle-check text-success" style="font-size: 1.5rem;"></i>';
+    } else {
+        iconDiv.innerHTML = '<i class="fa-solid fa-circle-xmark text-danger" style="font-size: 1.5rem;"></i>';
+    }
+    msgDiv.textContent = message;
+}
+
+function nextQuestion() {
+    state.currentQuestionIndex++;
+    if (state.currentQuestionIndex < state.currentQuizQuestions.length) {
+        loadQuestion();
+    } else {
+        finishStudentQuiz();
+    }
+}
+
+function finishStudentQuiz() {
+    state.quizActive = false;
+    clearInterval(state.timerInterval);
+
+    document.getElementById('student-quiz-view').classList.add('hidden');
+    document.getElementById('student-result-view').classList.remove('hidden');
+
+    document.getElementById('result-student-name').textContent = state.studentName;
+    document.getElementById('result-total-score').textContent = state.totalScore;
+    document.getElementById('result-correct-count').textContent = `${state.correctCount} / ${state.currentQuizQuestions.length}`;
+    document.getElementById('result-warning-count').textContent = `${state.warningCount} Lần`;
+
+    // Add result to Leaderboard
+    const newEntry = {
+        name: state.studentName,
+        grade: `Khối ${state.gradeFilter}`,
+        correct: `${state.correctCount}/${state.currentQuizQuestions.length}`,
+        avgTime: '3.5s',
+        warnings: state.warningCount,
+        score: state.totalScore
+    };
+    state.leaderboardData.unshift(newEntry);
+    state.leaderboardData.sort((a, b) => b.score - a.score);
+
+    logActivity('Học sinh', `Hoàn thành bài làm với ${state.totalScore} điểm. Vi phạm: ${state.warningCount} lần.`);
+}
+
+function restartQuiz() {
+    document.getElementById('student-result-view').classList.add('hidden');
+    document.getElementById('student-login-view').classList.remove('hidden');
+}
+
+// --- Anti-Cheat Guard Middleware ---
+function initAntiCheatListener() {
+    document.addEventListener('visibilitychange', () => {
+        if (state.quizActive && document.hidden && state.antiCheatEnabled) {
+            triggerAntiCheatWarning();
+        }
+    });
+
+    window.addEventListener('blur', () => {
+        if (state.quizActive && state.antiCheatEnabled) {
+            triggerAntiCheatWarning();
+        }
+    });
+}
+
+function triggerAntiCheatWarning() {
+    state.warningCount++;
+    // Deduct points
+    state.totalScore = Math.max(0, state.totalScore - 30);
+
+    // Update Security badge in quiz top bar
+    const textElem = document.getElementById('security-status-text');
+    if (textElem) {
+        textElem.textContent = `CẢNH BÁO (${state.warningCount})`;
+        textElem.className = 'text-danger';
+    }
+
+    document.getElementById('anticheat-modal').classList.remove('hidden');
+    logActivity('Bảo mật', `CẢNH BÁO GIAN LẬN: Học sinh ${state.studentName} đã chuyển tab/ẩn trình duyệt!`);
+}
+
+function closeAntiCheatModal() {
+    document.getElementById('anticheat-modal').classList.add('hidden');
+}
+
+// --- Leaderboard View ---
+function renderLeaderboard() {
+    const tbody = document.getElementById('leaderboard-table-body');
+    if (!tbody) return;
+
+    // Update Podium Top 1
+    if (state.leaderboardData.length > 0) {
+        document.getElementById('podium-top1-name').textContent = state.leaderboardData[0].name;
+        document.getElementById('podium-top1-score').textContent = `${state.leaderboardData[0].score} điểm`;
+    }
+
+    tbody.innerHTML = state.leaderboardData.map((item, index) => `
+        <tr>
+            <td><strong>#${index + 1}</strong></td>
+            <td><strong>${item.name}</strong></td>
+            <td>${item.grade}</td>
+            <td><span class="badge badge-success">${item.correct}</span></td>
+            <td>${item.avgTime}</td>
+            <td><span class="${item.warnings > 0 ? 'text-danger' : 'text-muted'}">${item.warnings} lần</span></td>
+            <td><strong class="text-gold">${item.score} đ</strong></td>
+        </tr>
+    `).join('');
+}
+
+// --- Analytics Charts ---
+function initCharts() {
+    // Grade Performance Bar Chart
+    const ctxBar = document.getElementById('gradePerformanceChart')?.getContext('2d');
+    if (ctxBar) {
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Khối 1', 'Khối 2', 'Khối 3', 'Khối 4', 'Khối 5'],
+                datasets: [{
+                    label: 'Tỷ lệ trả lời đúng (%)',
+                    data: [88, 92, 85, 78, 82],
+                    backgroundColor: [
+                        'rgba(99, 102, 241, 0.7)',
+                        'rgba(168, 85, 247, 0.7)',
+                        'rgba(6, 182, 212, 0.7)',
+                        'rgba(16, 185, 129, 0.7)',
+                        'rgba(245, 158, 11, 0.7)'
+                    ],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8' } } },
+                scales: {
+                    y: { beginAtZero: true, max: 100, ticks: { color: '#94a3b8' } },
+                    x: { ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+    }
+
+    // Skill Radar Chart
+    const ctxRadar = document.getElementById('skillRadarChart')?.getContext('2d');
+    if (ctxRadar) {
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['Thính Giác', 'Nhịp Điệu', 'Đọc Nốt', 'Nhạc Cụ', 'Lý Thuyết'],
+                datasets: [{
+                    label: 'Năng lực trung bình lớp học',
+                    data: [90, 85, 80, 95, 75],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.25)',
+                    pointBackgroundColor: '#06b6d4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#94a3b8' } } },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: { color: '#cbd5e1' },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// --- Activity Audit Log ---
+function logActivity(tag, text) {
+    const container = document.getElementById('activity-log-container');
+    if (!container) return;
+
+    const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    let tagClass = 'tag-system';
+    if (tag === 'Giáo viên') tagClass = 'tag-teacher';
+    if (tag === 'Học sinh') tagClass = 'tag-student';
+
+    const logDiv = document.createElement('div');
+    logDiv.className = 'log-item';
+    logDiv.innerHTML = `
+        <span class="log-time">${timeStr}</span>
+        <span class="log-tag ${tagClass}">[${tag}]</span>
+        <span class="log-text">${text}</span>
+    `;
+
+    container.insertBefore(logDiv, container.firstChild);
+}
+
+// --- Export Report & Data ---
+function exportReportPDF() {
+    document.getElementById('print-date').textContent = new Date().toLocaleString('vi-VN');
+    window.print();
+}
+
+function exportDataCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    csvContent += "Hạng,Họ và Tên Học Sinh,Khối Lớp,Số Câu Đúng,Thời Gian TB,Vi Phạm Anti-Cheat,Tổng Điểm\n";
+
+    state.leaderboardData.forEach((row, index) => {
+        csvContent += `${index + 1},"${row.name}","${row.grade}","${row.correct}","${row.avgTime}",${row.warnings},${row.score}\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Bang_Diem_Am_Nhac_${state.currentRoomCode}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    logActivity('Hệ thống', 'Đã xuất dữ liệu Bảng điểm ra tệp CSV thành công.');
+}
+
+function exportDataJSON() {
+    const exportObject = {
+        projectName: "Classroom App - Âm Nhạc Khối 1-5",
+        author: "thungamnhac",
+        exportTime: new Date().toISOString(),
+        activeRoom: state.currentRoomCode,
+        gradeFilter: state.gradeFilter,
+        antiCheatEnabled: state.antiCheatEnabled,
+        leaderboard: state.leaderboardData,
+        questionBank: musicQuestionBank
+    };
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
+    const link = document.createElement("a");
+    link.setAttribute("href", dataStr);
+    link.setAttribute("download", `Data_System_AmNhac_${state.currentRoomCode}.json`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    logActivity('Hệ thống', 'Đã xuất toàn bộ dữ liệu hệ thống ra tệp JSON thành công.');
+}
+
